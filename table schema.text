@@ -1,0 +1,47 @@
+// for table user_tour_file
+
+create type file_type_enum as enum ('audio', 'video');
+
+create table user_tour_file (
+    trail_file_id serial primary key,
+    trail_id varchar (50) not null,
+    title varchar (50) not null,
+    description varchar (200) not null,
+    file_type file_type_enum not null,
+    web_url varchar (200) not null,
+    element_content text not null,
+    created varchar (50) not null,
+    updated varchar (50)
+);
+
+// for table user_tour
+
+create table user_tour (
+    trail_id serial primary key,
+    user_id varchar (50) not null,
+    file_name varchar (50) not null
+);
+
+// for table user_tour_detail
+
+create type active as enum ('1', '0');
+
+create table user_tour_detail (
+    trail_detail_id serial primary key,
+    trail_id varchar (50) not null,
+    title varchar (50) not null,
+    description varchar (200) not null,    
+    web_url varchar (200) not null,
+    is_active active not null,
+    element_content text not null,
+    created varchar (50) not null,
+    updated varchar (50)
+);
+
+// fo table user_tour_sort
+
+create tabel user_tour_sort (
+    user_tour_sort_id serial primary key,
+    trail_sortId varchar (50),
+    trail_id varchar (50)
+);

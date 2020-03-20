@@ -1,0 +1,61 @@
+{
+  "name": "trailit",
+  "version": "1.0.0",
+  "description": "This is web user tour chrome extension",
+  "main": "app.js",
+  "engines": {
+    "node": ">=10.0.0",
+    "npm": ">=6.0.0"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production node app.js",
+    "dev": "NODE_ENV=dev nodemon app.js",
+    "test": "mocha --timeout 10000"
+  },
+  "author": "Trial It",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/multer": "^2.0.2",
+    "axios": "^0.19.2",
+    "bcryptjs": "^2.4.3",
+    "bower": "^1.8.2",
+    "bunyan": "^1.8.12",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "cors": "^2.8.4",
+    "cron": "^1.3.0",
+    "debug": "^3.1.0",
+    "http": "^0.0.0",
+    "https": "^1.0.0",
+    "ibm-cos-sdk": "^1.6.0",
+    "jsonwebtoken": "^8.1.1",
+    "knex": "^0.20.2",
+    "koa": "^2.11.0",
+    "koa-body": "^4.1.1",
+    "koa-bodyparser": "^4.2.1",
+    "koa-router": "^7.4.0",
+    "koa2-formidable": "^1.0.2",
+    "lodash": "^4.17.5",
+    "method-override": "^2.3.10",
+    "mocha": "^7.0.1",
+    "morgan": "^1.9.1",
+    "multer": "^1.3.0",
+    "nodemon": "^2.0.0",
+    "pg": "^7.14.0",
+    "querystring": "^0.2.0",
+    "randomstring": "^1.1.5",
+    "redis": "^2.8.0",
+    "request-promise": "^4.2.2",
+    "sha256": "^0.2.0",
+    "socket.io": "^2.0.4",
+    "util": "^0.10.3",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-loader": "^8.0.6",
+    "babel-preset-env": "^1.7.0",
+    "nodemon": "^2.0.1"
+  }
+}
