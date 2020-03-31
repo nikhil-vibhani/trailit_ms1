@@ -8,9 +8,9 @@ class BaseDao {
 
     // Sort perticular user's all trails
     async sortingTrails(data) {
-        // // If array comes then this will work
+        // If array comes then this will work
         // data.trailList.forEach(el => {
-            
+        //     console.log(el);
         // });
 
         // // if object comes then this will work

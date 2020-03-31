@@ -18,7 +18,6 @@ class BaseDao {
         } catch (err) {
             console.log(err);
         }
-
     };
 
     // Get user's all trails
@@ -26,8 +25,6 @@ class BaseDao {
         try {
             // Get user's trail id
             const res = await this.getTrailIdOfUser(data);
-
-            console.log(res);
 
             // Get all trailit file of user
             const fileResult = await db.select().from(this.trailFileTable).where({ trail_id: res.trail_id });

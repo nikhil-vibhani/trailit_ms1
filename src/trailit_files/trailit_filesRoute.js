@@ -51,7 +51,6 @@ trailitFileRoute.post(`${BASE_URL}uploadTrail_profile_image`, single('profile_im
 
 // Upload media file like video, audio
 trailitFileRoute.post(`${BASE_URL}uploadTrail_file_media`, single('media'), async (ctx, next) => {
-    console.log('hii');
     const mediaData = {
         file: ctx.request.file
     };

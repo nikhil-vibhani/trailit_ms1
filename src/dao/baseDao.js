@@ -20,9 +20,7 @@ class BaseDao {
         //Get Model
         this.table = dbTable;
         // this.client = null;
-    };
-
-    
+    };    
 
     // Connect database
     // connectDatabase() {

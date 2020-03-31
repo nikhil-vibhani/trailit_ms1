@@ -2,6 +2,9 @@
 // console.log('//************************* Trail It **************************//');
 // console.log('');
 
+// for env file
+require('dotenv').config();
+
 //Import Config
 const config = require('./src/config');
 
@@ -11,6 +14,8 @@ const bodyParser = require('koa-bodyparser');
 
 // init koa app
 const app = new Koa();
+
+// const http = require('http').createServer(app);
 
 // app.use(koaBody());
 // app.use(formidable());

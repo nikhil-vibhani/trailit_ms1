@@ -77,8 +77,6 @@ class BaseDao {
             // Insert trail_id into sorting table
             const response = await db(this.sortTable).insert({ trail_id: res[0].trail_detail_id }, ['*']);
 
-            console.log(response[0]);
-
             if (!response || response.length == 0) {
                 return trailitDetailMapper.trailitNotAddedToSort();
             }

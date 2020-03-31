@@ -6,7 +6,7 @@ create table user_tour_file (
     trail_file_id serial primary key,
     trail_id varchar (50) not null,
     title varchar (50) not null,
-    description varchar (200) not null,
+    description varchar (200),
     file_type file_type_enum not null,
     web_url varchar (200) not null,
     element_content text not null,
@@ -14,13 +14,15 @@ create table user_tour_file (
     updated varchar (50)
 );
 
+
 // for table user_tour
 
 create table user_tour (
     trail_id serial primary key,
     user_id varchar (50) not null,
-    file_name varchar (50) not null
+    trail_name varchar (50) not null
 );
+
 
 // for table user_tour_detail
 
@@ -31,17 +33,66 @@ create table user_tour_detail (
     trail_id varchar (50) not null,
     title varchar (50) not null,
     description varchar (200) not null,    
-    web_url varchar (200) not null,
+    web_url varchar (200),
     is_active active not null,
     element_content text not null,
     created varchar (50) not null,
     updated varchar (50)
 );
 
+
 // fo table user_tour_sort
 
-create tabel user_tour_sort (
+create table user_tour_sort (
     user_tour_sort_id serial primary key,
     trail_sortId varchar (50),
     trail_id varchar (50)
+);
+
+
+// user_tour_trail_data table schema
+
+create type tooltip_type_enum as enum ('tooltip', 'audio', 'video');
+
+create type fileType_enum as enum ('audio', 'video', 'text', 'picture');
+
+create table user_tour_trail_data (
+    trail_data_id serial primary key,
+    trail_id varchar (50) not null,
+    title varchar (50) not null,
+    description varchar (200),
+    web_url varchar (500),
+    url text not null,
+    path text,
+    selector text,
+    unique_target varchar (50),
+    class varchar (200),
+    type tooltip_type_enum not null,
+    media_type fileType_enum not null,
+    created varchar (50) not null,
+    updated varchar (50)
+);
+
+
+// create new table for store record of trail followers
+
+create table user_tour_trail_follow (
+    trail_follow_id serial primary key,
+    follower_id varchar (50) not null,
+    followed_id varchar (50) not null, (trail_id)
+);
+
+
+// Enum for flag
+create type flag_enum as enum ('read', 'unread');
+
+// Create table for notification 
+create table user_tour_trail_notification (
+    trail_notification_id serial primary key,
+    trail_follow_id varchar (50) not null,
+    trail_id varchar (50) not null,
+    notification text,
+    flag flag_enum not null,
+    created varchar (50) not null,
+    updated varchar (50) not null
 );
