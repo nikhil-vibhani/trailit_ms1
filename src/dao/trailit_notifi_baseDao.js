@@ -14,7 +14,7 @@ class BaseDao {
     async checkForExistingNotifiDetail(data) {
         try {
             // Check for existing trailit detail using Knex
-            const result = await db.select().from(this.table).where({ trail_notification_id: data.trail_notification_id });
+            const result = await db.select().from(this.notifiTable).where({ trail_notification_id: data.trail_notification_id });
 
             return result;
         } catch (err) {
@@ -22,10 +22,10 @@ class BaseDao {
         }
     };
 
-    // Read single trailit_detail
-    async readTrailit_detail(data) {
+    // Read single readTrailit_notification
+    async readTrailit_notification(data) {
         try {
-            // Check for existing trailit detail
+            // Check for existing trailit notification
             const res = await this.checkForExistingNotifiDetail(data);
 
             if (!res || res.length == 0) {
@@ -43,35 +43,26 @@ class BaseDao {
         }
     };
 
-    // // Read trailit_details
-    // async readTrailit_details() {
-    //     try {
-    //         // Get all trailit details
-    //         // const res = await client.query(`SELECT * FROM ${this.table}`);
+    // Read all trailit_notifications
+    async readTrailit_notifications(data) {
+        try {
+            // Get all trailit notification usign Knex
+            const res = await db.select().from(this.notifiTable).where({ user_id: data.user_id, flag: data.flag });
 
-    //         // Get all trailit details usign Knex
-    //         const res = await db.select().from(this.table);
-
-    //         // // Disconnect database
-    //         // await this.disconnectDatabase();
-
-    //         if (!res || res.length == 0) {
-    //             return trailitNotifiMapper.trailitDetailNotExist();
-    //         }
+            if (!res || res.length == 0) {
+                return trailitNotifiMapper.trailitNotifiNotExist();
+            }
             
-    //         // return results
-    //         return {
-    //             result: res,
-    //             statusCode: '200'
-    //         };
+            // return results
+            return {
+                result: res,
+                statusCode: '200'
+            };
 
-    //     } catch (err) {
-    //         console.log(err);
-            
-    //         // Disconnect database
-    //         // await this.disconnectDatabase();
-    //     }
-    // };
+        } catch (err) {
+            console.log(err);
+        }
+    };
     
     // Update trailit_detail
     async updateTrailit_detail(data) {
@@ -91,7 +82,7 @@ class BaseDao {
             }
 
             // Update trailit detail using Knex
-            const res = await db(this.table).where({ trail_notification_id: data.trail_notification_id }).update({ flag: data.flag }, ['*']);
+            const res = await db(this.notifiTable).where({ trail_notification_id: data.trail_notification_id }).update({ flag: flag }, ['*']);
 
             if (!res || res.length == 0) {
                 return trailitNotifiMapper.trailitNotifiNotUpdated();
@@ -119,7 +110,7 @@ class BaseDao {
             }
 
             // Deleting trailit detail using Knex
-            const result = await db(this.table).where({ trail_detail_id: res[0].trail_detail_id }).delete();
+            const result = await db(this.notifiTable).where({ trail_detail_id: res[0].trail_detail_id }).delete();
             
             if (!result || result == 0) {
                 return trailitNotifiMapper.trailitDetailNotDeleted();
@@ -127,7 +118,7 @@ class BaseDao {
 
             return {
                 result: {
-                    message: 'Trail detail deleted!',
+                    message: 'Trail notification removed!',
                     count: result
                 },
                 statusCode: '200'

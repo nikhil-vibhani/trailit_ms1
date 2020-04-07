@@ -12,7 +12,7 @@ function getTrailitFromDb(data) {
 };
 
 function getTrailitsFromDb() {
-    return trailit_notifi_Dao.readTrailit_details()
+    return trailit_notifi_Dao.readTrailit_details(data)
         .then(result => {
             return result;
         })

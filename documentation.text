@@ -1,0 +1,105 @@
+/*
+    ====================== USER_TOUR ======================
+
+    // Post api
+        url -> http://localhost:3008/trailit/api/v1/trailitTour/createTrailit
+
+        data(body) -> user_id, trail_name
+*/
+
+/*
+    ====================== USER_TOUR_TRAIL_DATA ======================
+
+    // POST api
+        url -> http://localhost:3008/trailit/api/v1/userTourDataDetail/createTrailit_trail_data_tour
+
+        data(body) -> [{
+            userId,
+            title,
+            description,
+            type,
+            media_type,
+            web_url,
+            url,
+            path,
+            selector,
+            unique_target,
+            class,
+            created            
+        }]
+
+
+    // GET api (for all trails)
+        url -> http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trails_data_tour/:userId
+
+        data(params) -> userId
+
+    // GET api (for single trail)
+        url -> http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trails_data_tour/:trail_data_id
+
+        data(params) -> trail_data_id
+
+    // PUT api
+        url -> http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trails_data_tour/:trail_data_id
+
+        data(params) -> trail_data_id
+        data(body) -> updateValue = {
+            key: value
+        }, 
+        updated
+
+    // DELETE api
+        url -> http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trails_data_tour/:trail_data_id
+
+        data(params) -> trail_data_id
+*/
+
+/*
+    ====================== USER_TOUR_TRAIL_SORT ======================
+
+    // PUT api
+        url -> http://localhost:3008/trailit/api/v1/trailitSorting/sortTrailOrder
+
+        data(body) -> trailList (array)
+*/
+
+/*
+    ====================== USER_TOUR_TRAIL_FOLLOW ======================
+    // POST api
+        url -> http://localhost:3008/trailit/api/v1/userTourFollow/createTrailit_follow_tour
+
+        data(body) -> follower_id, followed_id
+    
+    // Delete api
+        url -> http://localhost:3008/trailit/api/v1/userTourFollow/deleteTrailit_follow_tour
+
+        data(body) -> follower_id, followed_id
+*/
+
+/*
+    ====================== USER_TOUR_TRAIL_NOTIFICATION ======================
+    
+    // GET api (for single trail notification)
+        url -> http://localhost:3008/trailit/api/v1/userTourNotification/readTrailit_notification_tour/:trail_notification_id
+
+        data(params) -> trail_notification_id
+
+    // GET api (for all trails notification)
+        url -> http://localhost:3008/trailit/api/v1/userTourNotification/readTrailits_notification_tour/:userId
+
+        data(params) -> userId
+
+    // PUT api (for update notification)
+        url -> http://localhost:3008/trailit/api/v1/userTourNotification/updateTrailit_notification_tour/:trail_notification_id
+
+        data(params) -> trail_notification_id
+        data(body) -> updateValue( containing updated value object), 
+                      updated( timeStamp )
+
+
+    // DELETE api (for delete notification)
+        url -> http://localhost:3008/trailit/api/v1/userTourNotification/deleteTrailit_notification_tour/:trail_notification_id
+
+        data(params) -> trail_notification_id
+
+*/

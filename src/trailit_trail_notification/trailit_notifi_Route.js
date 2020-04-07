@@ -5,7 +5,7 @@ const trailit_notifi_Facade = require('./trailit_notifi_Facade');
 const trailit_notifi_Router = new Router();
 const BASE_URL  = `/trailit/api/v1/userTourNotification/`;
 
-trailit_notifi_Router.get(`${BASE_URL}readTrailit_detail_tour/:trail_notification_id`, async (ctx, next) => {
+trailit_notifi_Router.get(`${BASE_URL}readTrailit_notification_tour/:trail_notification_id`, async (ctx, next) => {
     const data = {
         trail_notification_id: ctx.params.trail_notification_id
     };
@@ -19,8 +19,13 @@ trailit_notifi_Router.get(`${BASE_URL}readTrailit_detail_tour/:trail_notificatio
         });
 });
 
-trailit_notifi_Router.get(`${BASE_URL}readTrailits_detail_tour`, async (ctx, next) => {
-    await trailit_notifi_Facade.getTrailits()
+trailit_notifi_Router.get(`${BASE_URL}readTrailits_notification_tour`, async (ctx, next) => {
+    const data = {
+        user_id: ctx.request.body.user_id,
+        flag: ctx.request.body.flag
+    };
+
+    await trailit_notifi_Facade.getTrailits(data)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
         })
@@ -29,7 +34,7 @@ trailit_notifi_Router.get(`${BASE_URL}readTrailits_detail_tour`, async (ctx, nex
         });
 });
 
-trailit_notifi_Router.put(`${BASE_URL}updateTrailit_detail_tour/:trail_notification_id`, async (ctx, next) => {
+trailit_notifi_Router.put(`${BASE_URL}updateTrailit_notification_tour/:trail_notification_id`, async (ctx, next) => {
     // Validate body
     const errors = await validators.updateTrailitValidation(ctx);
     if (errors && errors.errors.length > 0) {
@@ -51,7 +56,7 @@ trailit_notifi_Router.put(`${BASE_URL}updateTrailit_detail_tour/:trail_notificat
         });
 });
 
-trailit_notifi_Router.delete(`${BASE_URL}deleteTrailit_detail_tour/:trail_notification_id`, async (ctx, next) => {
+trailit_notifi_Router.delete(`${BASE_URL}deleteTrailit_notification_tour/:trail_notification_id`, async (ctx, next) => {
     const data = {
         trail_notification_id: ctx.params.trail_notification_id
     };

@@ -10,8 +10,8 @@ function getSingleTrailit(data) {
         });
 };
 
-function getAllTrailit() {
-    return trailit_notifi_Dao.getTrailitsFromDb()
+function getAllTrailit(data) {
+    return trailit_notifi_Dao.getTrailitsFromDb(data)
         .then(result => {
             return result;
         })

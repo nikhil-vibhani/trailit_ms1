@@ -103,7 +103,7 @@ trailitDataRoute.post(`${BASE_URL}uploadTrail_file_image`, single('file'), async
         });
 });
 
-// Get trail data by id
+// Get trail data by trail_id
 trailitDataRoute.get(`${BASE_URL}readTrailit_trail_data_tour/:trail_data_id`, async (ctx, next) => {
     const trailitData = {
         trail_data_id: ctx.params.trail_data_id
@@ -118,9 +118,13 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trail_data_tour/:trail_data_id`, as
         });
 });
 
-// Get all trails data
-trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour`, async (ctx, next) => {
-    await taskFacade.getTrailits()
+// Get all trails data of user by user_id
+trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour/:user_id`, async (ctx, next) => {
+    const trailitData = {
+        userId: ctx.params.user_id
+    };
+
+    await taskFacade.getTrailits(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
         })

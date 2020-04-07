@@ -7,6 +7,8 @@ require('dotenv').config();
 
 //Import Config
 const config = require('./src/config');
+const BaseDao = require('./src/dao/trailit_data_baseDao');
+const baseDao = new BaseDao();
 
 const Koa = require('koa');
 
@@ -15,10 +17,6 @@ const bodyParser = require('koa-bodyparser');
 // init koa app
 const app = new Koa();
 
-// const http = require('http').createServer(app);
-
-// app.use(koaBody());
-// app.use(formidable());
 app.use(bodyParser());
 
 // CORS
@@ -34,6 +32,14 @@ app.use(async (ctx, next) => {
 require('./src/route/trailit')(app);
 
 // start server
-app.listen(config.cfg.port, () => {
+const server = app.listen(config.cfg.port, () => {
 	console.info(`Express server listening on ${config.cfg.port}, in ${config.cfg.TAG} mode`);
+});
+
+// Socket connection
+const io = require('socket.io').listen(server);
+
+io.on('connection', (socket) => {
+	console.log('socket is listening.');
+	baseDao.socket(socket, io);
 });

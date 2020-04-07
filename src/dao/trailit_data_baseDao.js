@@ -112,28 +112,12 @@ class BaseDao {
             // Get followers list
             const followersList = await db.select().from(this.followTable).whereIn('followed_id', followedIds);
 
-            // // Merge trail_id and trail_follow_id
-            // const ids = followersList.map(el => {
-            //     for (let i = 0; i < allTrails.length; i++) {
-            //         if (el.followed_id == allTrails[i].trail_id) {
-            //             return {
-            //                 trail_id: allTrails[i].trail_id,
-            //                 trail_follow_id: el.trail_follow_id
-            //             };
-            //         }
-            //     }
-            // });
-
-            // console.log(ids);
-
             // Create new Map with unique followers
             const followerMap = new Map();
 
             followersList.forEach(el => {
                 followerMap.set(el.follower_id, el);
             });
-
-            console.log(followerMap);
 
             // Adding trail_id and followed_id in ids array
             followerMap.forEach((value, key) => {
@@ -146,8 +130,6 @@ class BaseDao {
                     }
                 }
             });
-
-            console.log(ids);
 
             // Creating notification url
             dataRes.forEach(el => {
@@ -183,6 +165,13 @@ class BaseDao {
         } catch (err) {
             console.log(err);
         }
+    };
+
+    // Socket connection
+    socket(socket, io) {
+        socket.on('join', (room, callback) => {
+            
+        });
     };
 
     // Uploading profile image file into cloud
@@ -274,10 +263,18 @@ class BaseDao {
     };
 
     // Read trailit files
-    async readTrailitAllData() {
+    async readTrailitAllData(data) {
         try {
-            // Get all result using Knex 
-            const res = await db.select().from(this.table);
+            // Get user's all trails result using Knex 
+            const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
+
+            // Pushing trial ids into new array            
+            const userTrailIds = userData.map(el => {
+                return el.trail_id;
+            });
+
+            // Get trails details by trail_ids
+            const res = await db.select().from(this.table).whereIn('trail_id', userTrailIds);
 
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();

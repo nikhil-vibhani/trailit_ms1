@@ -50,8 +50,8 @@ function getTrailit(taskData) {
         });
 };
 
-function getAllTrailits() {
-    return trailitDao.getTrailitsFromDb()
+function getAllTrailits(data) {
+    return trailitDao.getTrailitsFromDb(data)
         .then(result => {
             return result;
         })

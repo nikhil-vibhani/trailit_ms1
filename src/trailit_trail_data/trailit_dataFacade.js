@@ -50,8 +50,8 @@ function getSingleTrailit(data) {
         });
 };
 
-function getTrailits() {
-    return taskService.getAllTrailits()
+function getTrailits(data) {
+    return taskService.getAllTrailits(data)
         .then(result => {
             return result;
         })

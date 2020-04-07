@@ -57,8 +57,8 @@ function getTrailitFromDb(data) {
         });
 };
 
-function getTrailitsFromDb() {
-    return trailitFileDao.readTrailitAllData()
+function getTrailitsFromDb(data) {
+    return trailitFileDao.readTrailitAllData(data)
         .then(result => {
             return result;
         })

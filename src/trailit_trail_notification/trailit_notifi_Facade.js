@@ -10,8 +10,8 @@ function getTrailit(data) {
         });
 };
 
-function getTrailits() {
-    return trailit_notifi_Service.getAllTrailit()
+function getTrailits(data) {
+    return trailit_notifi_Service.getAllTrailit(data)
         .then(result => {
             return result;
         })
