@@ -32,7 +32,7 @@ create table user_tour_detail (
     trail_detail_id serial primary key,
     trail_id varchar (50) not null,
     title varchar (50) not null,
-    description varchar (200) not null,    
+    description text not null,    
     web_url varchar (200),
     is_active active not null,
     element_content text not null,
@@ -60,7 +60,7 @@ create table user_tour_trail_data (
     trail_data_id serial primary key,
     trail_id varchar (50) not null,
     title varchar (50) not null,
-    description varchar (200),
+    description text,
     web_url varchar (500),
     url text not null,
     path text,
@@ -94,5 +94,6 @@ create table user_tour_trail_notification (
     notification text,
     flag flag_enum not null,
     created varchar (50) not null,
-    updated varchar (50) not null
+    updated varchar (50),
+    user_id varchar (50) not null
 );

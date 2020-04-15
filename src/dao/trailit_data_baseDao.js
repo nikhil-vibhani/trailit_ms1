@@ -11,6 +11,9 @@ const cloud = new IBMCOS();
     ===========================  TRAILIT FILE  ===========================
 */
 
+let socketIo;
+let ioSocket;
+
 class BaseDao {
     constructor(dbTable, sortTable, userTable, followTable, notificationTable) {
         this.table = dbTable;
@@ -44,7 +47,7 @@ class BaseDao {
                     user_id: obj.userId,
                     trail_name: obj.title
                 };  
-            });            
+            });       
 
             // Insert into USER_TOUR table 
             const res = await db(this.userTable).insert(userDataArray, ['*']);
@@ -137,8 +140,6 @@ class BaseDao {
                 notificationUrl.push(`http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}`);
             });
 
-            console.log(notificationUrl);
-
             // Creating notification array to bulk insert
             const notifiArray = ids.map(el => {
                 return {
@@ -146,7 +147,8 @@ class BaseDao {
                     trail_id: el.trail_id,
                     notification: notificationUrl,
                     flag: 'unread',
-                    created: new Date().toISOString()
+                    created: new Date().getTime(),
+                    user_id: userDataArray[0].user_id
                 };
             });
 
@@ -155,6 +157,21 @@ class BaseDao {
             if (!notifiRes || notifiRes == 0) {
                 return trailitDataMapper.trailitNotifiNotAdded();
             }
+
+            // Send notification using Socket.io
+            followerMap.forEach((value, key) => {
+                // Join the room using follower id
+                socketIo.join(key);
+
+                // Send message to each rooms
+                ioSocket.in(key).emit('notification', notificationUrl);
+
+                // Leave room
+                socketIo.leave(key);
+            });
+
+            // Sending notification
+            // socketIo.emit('notification', notifiRes);
     
             // Return results            
             return {
@@ -169,8 +186,11 @@ class BaseDao {
 
     // Socket connection
     socket(socket, io) {
-        socket.on('join', (room, callback) => {
-            
+        socketIo = socket;
+        ioSocket = io;
+
+        socket.on('disconnect', () => {
+            console.log('Socket is disconnected');
         });
     };
 
@@ -232,6 +252,9 @@ class BaseDao {
                 return trailitDataMapper.trailitDataNotExist();
             }
 
+            // Get user_id by trail_id
+            const userRes = await db.select().from(this.userTable).where({ trail_id: res[0].trail_id });
+
             // Get follower of that trail
             const response = await db.select().from(this.followTable).where({ followed_id: res[0].trail_id });
 
@@ -247,6 +270,7 @@ class BaseDao {
             // Final obj with followers and follower count properties
             const finalObj = {
                 ...res[0],
+                user_id: userRes[0].user_id,
                 follower_id: followers,
                 follower_count: followerCount
             };

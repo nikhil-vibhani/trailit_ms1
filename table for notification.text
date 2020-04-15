@@ -6,8 +6,9 @@ create table user_tour_trail_notification (
     trail_notification_id serial primary key,
     trail_follow_id varchar (50) not null,
     trail_id varchar (50) not null,
-    notification text [],
+    notification text,
     flag flag_enum not null,
     created varchar (50) not null,
-    updated varchar (50) not null
+    updated varchar (50),
+    user_id varchar (50) not null
 );

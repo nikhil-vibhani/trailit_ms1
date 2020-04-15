@@ -16,6 +16,9 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
     }
 
     const data = ctx.request.body;
+    if (data === []) {
+        resHndlr.sendError(ctx, 'data could not be empty!');
+    }
 
     const trailitData = data.map(el => {
         return {
