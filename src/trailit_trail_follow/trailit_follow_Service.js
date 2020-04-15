@@ -10,6 +10,16 @@ function createTrailit(data) {
         });
 };
 
+function readTrailitFollow(data) {
+    return trailit_follow_Dao.readTrailits(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function trailitDelete(data) {
     return trailit_follow_Dao.deleteTrailitFromDb(data)
         .then(result => {
@@ -22,5 +32,6 @@ function trailitDelete(data) {
 
 module.exports = {
     createTrailit,
+    readTrailitFollow,
     trailitDelete
 };

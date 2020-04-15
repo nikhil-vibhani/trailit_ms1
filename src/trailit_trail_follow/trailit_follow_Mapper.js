@@ -7,6 +7,15 @@ function trailitFollowExist() {
     return resObj; 
 };
 
+function notTrailFound() {
+    const resObj = {
+        "result": "Not trails found of preview user.",
+        "statusCode": 400
+    };
+
+    return resObj; 
+}
+
 function trailitFollowNotExist() {
     const resObj = {
         "result": "Trailit follow not found",
@@ -42,6 +51,7 @@ function trailitNotAddedToSort() {
 };
 
 module.exports = {
+    notTrailFound,
     trailitFollowExist,
     trailitFollowNotExist,
     trailitFollowNotCreated,

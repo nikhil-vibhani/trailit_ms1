@@ -2,13 +2,13 @@ const trailitCont = require('./trailit_follow_Constants');
 const exception = require('../customExceptions');
 
 function createTrailitFollowValidation(req) {
-    const { follower_id, followed_id } = req.request.body;
+    const { follower_id, previewUserId } = req.request.body;
     let errors = [];
 
     if (!follower_id) {
         errors.push({ code: 500, message: trailitCont.MESSAGES.followerIdCantBeEmpty });  
-    } else if (!followed_id) {
-        errors.push({ code: 500, message: trailitCont.MESSAGES.followedIdCantBeEmpty });
+    } else if (!previewUserId) {
+        errors.push({ code: 500, message: trailitCont.MESSAGES.previewUserIdCantBeEmpty });
     }     
 
     if (errors.length > 0) {

@@ -10,6 +10,16 @@ function createSingleTrailit(data) {
         });
 };
 
+function readTrailits(data) {
+    return trailit_follow_Service.readTrailitFollow(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function deleteTrailit(data) {
     return trailit_follow_Service.trailitDelete(data)
         .then(result => {
@@ -22,5 +32,6 @@ function deleteTrailit(data) {
 
 module.exports = {
     createSingleTrailit,
+    readTrailits,
     deleteTrailit
 };

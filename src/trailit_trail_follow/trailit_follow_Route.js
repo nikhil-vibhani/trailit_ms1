@@ -16,7 +16,7 @@ trailit_follow_Router.post(`${BASE_URL}createTrailit_follow_tour`, async (ctx, n
     // Trailit data
     const trailitData = {
         follower_id: ctx.request.body.follower_id,
-        followed_id: ctx.request.body.followed_id
+        previewUserId: ctx.request.body.previewUserId
     };
 
     await trailit_follow_Facade.createSingleTrailit(trailitData)
@@ -28,12 +28,41 @@ trailit_follow_Router.post(`${BASE_URL}createTrailit_follow_tour`, async (ctx, n
         }); 
 });
 
-// Delete trail follower api
-trailit_follow_Router.delete(`${BASE_URL}deleteTrailit_follow_tour`, async (ctx, next) => {
+// Read follow api
+trailit_follow_Router.post(`${BASE_URL}readTrailits_follow_tour`, async (ctx, next) => {
+    // Validate body 
+    const errors = await validators.createTrailitFollowValidation(ctx);
+    if (errors && errors.errors.length > 0) {
+        return resHndlr.sendError(ctx, errors.errors[0]);
+    }
+
     // Trailit data
     const trailitData = {
         follower_id: ctx.request.body.follower_id,
-        followed_id: ctx.request.body.followed_id
+        previewUserId: ctx.request.body.previewUserId
+    };
+
+    await trailit_follow_Facade.readTrailits(trailitData)
+        .then(result => {
+            resHndlr.sendSuccess(ctx, result);
+        })
+        .catch(err => {
+            resHndlr.sendError(ctx, err);
+        }); 
+});
+
+// Delete trail follower api
+trailit_follow_Router.post(`${BASE_URL}deleteTrailit_follow_tour`, async (ctx, next) => {
+    // Validate body 
+    const errors = await validators.createTrailitFollowValidation(ctx);
+    if (errors && errors.errors.length > 0) {
+        return resHndlr.sendError(ctx, errors.errors[0]);
+    }
+
+    // Trailit data
+    const trailitData = {
+        follower_id: ctx.request.body.follower_id,
+        previewUserId: ctx.request.body.previewUserId
     };
 
     await trailit_follow_Facade.deleteTrailit(trailitData)
