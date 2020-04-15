@@ -1,3 +1,6 @@
 node_modules
 package-lock.json
 .env
+table_for_follower.text
+table_schema.text
+table_for_notification.text

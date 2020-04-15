@@ -1,6 +1,0 @@
-// create new table for store record of trail followers
-create table user_tour_trail_follow (
-    trail_follow_id serial primary key,
-    follower_id varchar (50) not null,
-    followed_id varchar (50) not null, (trail_id)
-);
