@@ -14,7 +14,7 @@ class BaseDao {
     async checkForExistingNotifiDetail(data) {
         try {
             // Check for existing trailit detail using Knex
-            const result = await db.select().from(this.notifiTable).where({ trail_notification_id: data.trail_notification_id });
+            const result = await db.select().from(this.notifiTable).where({ user_id: data.user_id });
 
             return result;
         } catch (err) {
@@ -65,8 +65,9 @@ class BaseDao {
     };
     
     // Update trailit_detail
-    async updateTrailit_detail(data) {
+    async updateTrailit_notification(data) {
         try {    
+            console.log(data);
             // Check if trailit exist
             const result = await this.checkForExistingNotifiDetail(data);
     
@@ -74,15 +75,12 @@ class BaseDao {
                 return trailitNotifiMapper.trailitNotifiNotExist();
             }
 
-            let flag;
-            if (!data.updateValue.flag) {
-                flag = result[0].flag;
-            } else {
-                flag = data.updateValue.flag;
-            }
+            console.log(result);
+
+            let flag = data.updateValue.flag;
 
             // Update trailit detail using Knex
-            const res = await db(this.notifiTable).where({ trail_notification_id: data.trail_notification_id }).update({ flag: flag }, ['*']);
+            const res = await db(this.notifiTable).where({ user_id: data.user_id }).update({ flag: flag, updated: data.updated }, ['*']);
 
             if (!res || res.length == 0) {
                 return trailitNotifiMapper.trailitNotifiNotUpdated();
@@ -90,7 +88,7 @@ class BaseDao {
     
             // Return result
             return {
-                result: res[0],
+                result: res,
                 statusCode: '200'
             };
 
@@ -100,7 +98,7 @@ class BaseDao {
     };
 
     // Delete trailit_detail
-    async deleteTrailit_detail(data) {
+    async deleteTrailit_notification(data) {
         try {
             // Check if trailit detail exist
             const res = await this.checkForExistingNotifiDetail(data);
@@ -109,17 +107,24 @@ class BaseDao {
                 return trailitNotifiMapper.trailitDetailNotExist();
             }
 
-            // Deleting trailit detail using Knex
-            const result = await db(this.notifiTable).where({ trail_detail_id: res[0].trail_detail_id }).delete();
-            
-            if (!result || result == 0) {
-                return trailitNotifiMapper.trailitDetailNotDeleted();
-            }           
+            const notificationIds = res.map(el => {
+                if (el.flag === 'unread') {
+                    return el.trail_notification_id;
+                }
+            });
+
+            if (notificationIds.length > 0) {
+                // Deleting trailit detail using Knex
+                const result = await db(this.notifiTable).whereIn('trail_notification_id', notificationIds).delete();
+                
+                if (!result || result == 0) {
+                    return trailitNotifiMapper.trailitDetailNotDeleted();
+                }           
+            }
 
             return {
                 result: {
-                    message: 'Trail notification removed!',
-                    count: result
+                    message: 'Trail notification removed!'
                 },
                 statusCode: '200'
             };

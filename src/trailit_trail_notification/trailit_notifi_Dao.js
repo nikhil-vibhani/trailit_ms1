@@ -2,7 +2,7 @@ const BaseDao = require('../dao/trailit_notifi_baseDao');
 const trailit_notifi_Dao = new BaseDao('user_tour_trail_notification');
 
 function getTrailitFromDb(data) {
-    return trailit_notifi_Dao.readTrailit_detail(data)
+    return trailit_notifi_Dao.readTrailit_notification(data)
         .then(result => {
             return result;
         })
@@ -11,8 +11,8 @@ function getTrailitFromDb(data) {
         });
 };
 
-function getTrailitsFromDb() {
-    return trailit_notifi_Dao.readTrailit_details(data)
+function getTrailitsFromDb(data) {
+    return trailit_notifi_Dao.readTrailit_notifications(data)
         .then(result => {
             return result;
         })
@@ -22,7 +22,7 @@ function getTrailitsFromDb() {
 };
 
 function updateTrailitIntoDb(data) {
-    return trailit_notifi_Dao.updateTrailit_detail(data)
+    return trailit_notifi_Dao.updateTrailit_notification(data)
         .then(result => {
             return result;
         })
@@ -32,7 +32,7 @@ function updateTrailitIntoDb(data) {
 };
 
 function deleteTrailitFromDb(data) {
-    return trailit_notifi_Dao.deleteTrailit_detail(data)
+    return trailit_notifi_Dao.deleteTrailit_notification(data)
         .then(result => {
             return result;
         })

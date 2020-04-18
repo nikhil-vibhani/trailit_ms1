@@ -19,6 +19,9 @@ const trailit_sort = require('../trailit_sort/trailit_sort_Route');
 // Load trailit_follow route
 const trailit_follow = require('../trailit_trail_follow/trailit_follow_Route');
 
+// Load trailit_detail route
+const trailit_notification = require('../trailit_trail_notification/trailit_notifi_Route');
+
 // Load response module
 const responseHandler = require('../responseHandler');
 
@@ -47,6 +50,9 @@ module.exports = (app) => {
 
     // Trailit follow route
     app.use(trailit_follow.routes());
+
+    // Trailit notification route
+    app.use(trailit_notification.routes());
 
     // Attach ErrorHandler to Handle All Errors
     app.use(responseHandler.hndlError);

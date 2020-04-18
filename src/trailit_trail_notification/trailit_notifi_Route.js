@@ -19,7 +19,7 @@ trailit_notifi_Router.get(`${BASE_URL}readTrailit_notification_tour/:trail_notif
         });
 });
 
-trailit_notifi_Router.get(`${BASE_URL}readTrailits_notification_tour`, async (ctx, next) => {
+trailit_notifi_Router.post(`${BASE_URL}readTrailits_notification_tour`, async (ctx, next) => {
     const data = {
         user_id: ctx.request.body.user_id,
         flag: ctx.request.body.flag
@@ -34,15 +34,16 @@ trailit_notifi_Router.get(`${BASE_URL}readTrailits_notification_tour`, async (ct
         });
 });
 
-trailit_notifi_Router.put(`${BASE_URL}updateTrailit_notification_tour/:trail_notification_id`, async (ctx, next) => {
+trailit_notifi_Router.post(`${BASE_URL}updateTrailit_notification_tour`, async (ctx, next) => {
     // Validate body
-    const errors = await validators.updateTrailitValidation(ctx);
+    console.log('hii');
+    const errors = await validators.updateTrailitNotifiValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors[0]);
     }
 
     const updateData = {
-        trail_notification_id: ctx.params.trail_notification_id,
+        user_id: ctx.request.body.user_id,
         updateValue: ctx.request.body.updateValue,
         updated: ctx.request.body.updated
     };
@@ -56,9 +57,10 @@ trailit_notifi_Router.put(`${BASE_URL}updateTrailit_notification_tour/:trail_not
         });
 });
 
-trailit_notifi_Router.delete(`${BASE_URL}deleteTrailit_notification_tour/:trail_notification_id`, async (ctx, next) => {
+trailit_notifi_Router.delete(`${BASE_URL}deleteTrailit_notification_tour`, async (ctx, next) => {
     const data = {
-        trail_notification_id: ctx.params.trail_notification_id
+        user_id: ctx.request.body.user_id,
+        flag: ctx.request.body.flag
     };
 
     await trailit_notifi_Facade.deleteTrailit(data)

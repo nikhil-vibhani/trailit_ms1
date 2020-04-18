@@ -1,6 +1,6 @@
 const MESSAGES = {
     ValidationError: 'Validation errors',
-    trail_notification_idCantBeEmpty: 'Trail notification id cannot be empty',
+    user_idCantBeEmpty: 'User id cannot be empty',
     trail_notification_idMustBeNum: 'Trail notification id must be a number',
     trail_idCantBeEmpty: 'Trail id cannot be empty',
     titleCantBeEmpty: 'Title cannot be empty',

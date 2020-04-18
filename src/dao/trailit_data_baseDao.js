@@ -115,65 +115,57 @@ class BaseDao {
             // Get followers list
             const followersList = await db.select().from(this.followTable).whereIn('followed_id', followedIds);
 
-            // Create new Map with unique followers
-            const followerMap = new Map();
-
-            followersList.forEach(el => {
-                followerMap.set(el.follower_id, el);
-            });
-
-            // Adding trail_id and followed_id in ids array
-            followerMap.forEach((value, key) => {
-                for (let i = 0; i < allTrails.length; i++) {
-                    if (value.followed_id == allTrails[i].trail_id) {
-                        ids.push({
-                            trail_id: allTrails[i].trail_id,
-                            trail_follow_id: value.trail_follow_id
-                        });
-                    }
-                }
-            });
-
-            // Creating notification url
-            dataRes.forEach(el => {
-                // Url changable as per domain
-                notificationUrl.push(`http://localhost:3008/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}`);
-            });
-
-            // Creating notification array to bulk insert
-            const notifiArray = ids.map(el => {
-                return {
-                    trail_follow_id: el.trail_follow_id,
-                    trail_id: el.trail_id,
-                    notification: notificationUrl,
-                    flag: 'unread',
-                    created: new Date().getTime(),
-                    user_id: userDataArray[0].user_id
-                };
-            });
-
-            const notifiRes = await db(this.notfiTable).insert(notifiArray, ['*']);
-
-            if (!notifiRes || notifiRes == 0) {
-                return trailitDataMapper.trailitNotifiNotAdded();
-            }
-
-            // Send notification using Socket.io
-            followerMap.forEach((value, key) => {
-                // Join the room using follower id
-                socketIo.join(key);
-
-                // Send message to each rooms
-                ioSocket.in(key).emit('notification', notificationUrl);
-
-                // Leave room
-                socketIo.leave(key);
-            });
-
-            // Sending notification
-            // socketIo.emit('notification', notifiRes);
+            if (followersList && followersList.length > 0) {
+                // Create new Map with unique followers
+                const followerMap = new Map();
     
-            // Return results            
+                followersList.forEach(el => {
+                    followerMap.set(el.follower_id, el);
+                });
+    
+                // Adding trail_id and followed_id in ids array
+                followerMap.forEach((value, key) => {
+                    for (let i = 0; i < allTrails.length; i++) {
+                        if (value.followed_id == allTrails[i].trail_id) {
+                            ids.push({
+                                trail_id: allTrails[i].trail_id,
+                                trail_follow_id: value.trail_follow_id,
+                                follower_id: value.follower_id
+                            });
+                        }
+                    }
+                });
+    
+                // Creating notification url
+                dataRes.forEach(el => {
+                    // Url changable as per domain
+                    notificationUrl.push(`https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}?user_id=${data[0].userId}`);
+                });
+    
+                // Creating notification array to bulk insert
+                const notifiArray = ids.map(el => {
+                    return {
+                        trail_follow_id: el.trail_follow_id,
+                        trail_id: el.trail_id,
+                        notification: notificationUrl,
+                        flag: 'unread',
+                        created: new Date().getTime(),
+                        user_id: el.follower_id
+                    };  
+                });
+    
+                const notifiRes = await db(this.notfiTable).insert(notifiArray, ['*']);
+    
+                if (!notifiRes || notifiRes == 0) {
+                    return trailitDataMapper.trailitNotifiNotAdded();
+                }
+
+                // Send notification using Socket.io
+                followerMap.forEach(key => {
+                    // Send message to each rooms
+                    ioSocket.in(key.follower_id).emit('notification', notificationUrl);
+                });
+            }      
             return {
                 result: dataRes,
                 statusCode: '201'
@@ -189,6 +181,12 @@ class BaseDao {
         socketIo = socket;
         ioSocket = io;
 
+        // Get userId from client using socket
+        socket.on('userId', async (data) => {
+            socket.join(data);
+        });
+
+        // Disconnecting socket
         socket.on('disconnect', () => {
             console.log('Socket is disconnected');
         });
@@ -289,6 +287,7 @@ class BaseDao {
     // Read trailit files
     async readTrailitAllData(data) {
         try {
+            console.log('hii');
             // Get user's all trails result using Knex 
             const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
 
