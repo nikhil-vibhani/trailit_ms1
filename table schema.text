@@ -46,7 +46,8 @@ create table user_tour_detail (
 create table user_tour_sort (
     user_tour_sort_id serial primary key,
     trail_sortId varchar (50),
-    trail_id varchar (50)
+    trail_id varchar (50) not null,
+    user_id varchar (50) not null
 );
 
 

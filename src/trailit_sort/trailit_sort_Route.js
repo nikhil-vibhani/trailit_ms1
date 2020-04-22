@@ -8,9 +8,7 @@ const BASE_URL = `/trailit/api/v1/trailitSorting/`;
 
 trailitSort.put(`${BASE_URL}sortTrailOrder`, async (ctx, next) => {
 	try {
-		const data = {
-			trailList: ctx.request.body.trailList
-		};
+		const data = ctx.request.body;
 		
 		const result = await trailSortFacade.getAllTrails(data);
 		resHndlr.sendSuccess(ctx, result);

@@ -33,24 +33,10 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
             selector: el.selector,
             unique_target: el.uniqueTarget,
             class: el.class,
-            created: el.created
+            created: el.created,
+            trailIndex: el.trailIndex
         };
     });
-
-    // const trailitData = {
-    //     trail_id: ctx.request.body.trail_id,
-    //     title: ctx.request.body.title,
-    //     description: ctx.request.body.description,
-    //     type: ctx.request.body.type,
-    //     mediaType: ctx.request.body.mediaType,
-    //     web_url: ctx.request.body.web_url,
-    //     url: ctx.request.body.url,
-    //     path: ctx.request.body.path,
-    //     selector: ctx.request.body.selector,
-    //     uniqueTarget: ctx.request.body.uniqueTarget,
-    //     dataClass: ctx.request.body.class,
-    //     created: ctx.request.body.created
-    // };
 
     await taskFacade.createSingleTrailit(trailitData)
         .then(result => {
