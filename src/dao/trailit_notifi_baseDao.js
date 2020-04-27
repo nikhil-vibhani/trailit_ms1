@@ -52,7 +52,7 @@ class BaseDao {
             if (!res || res.length == 0) {
                 return trailitNotifiMapper.trailitNotifiNotExist();
             }
-            
+
             // return results
             return {
                 result: res,

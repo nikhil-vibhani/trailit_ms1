@@ -198,36 +198,64 @@ class BaseDao {
         socket.on('userId', async (data) => {
             userId = data;
             socket.join(data);
+
+            try {
+                const res = await this.getFollowers();
+
+                if (res.followersList && res.followersList.length > 0) {
+                    // Create new Map with unique followers
+                    const followerMap = new Map();
+        
+                    res.followersList.forEach(el => {
+                        followerMap.set(el.follower_id, el);
+                    });
+
+                    const userIds = [];
+
+                    followerMap.forEach((value, key) => {
+                        userIds.push(key);
+                    });
+                    
+                    socket.emit('followerList', userIds);
+                } else {
+                    socket.emit('followerList', []);
+                }
+
+            } catch (err) {
+                console.log(err);
+            }
         });
         
         // Get send notification
         socket.on('sendNotification', async () => {
             try {
-                // Get all trails of user
-                const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
+                // // Get all trails of user
+                // const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
     
-                // Create new array with followed_ids
-                const followedIds = allTrails.map(trail => {
-                    return trail.trail_id;
-                });
+                // // Create new array with followed_ids
+                // const followedIds = allTrails.map(trail => {
+                //     return trail.trail_id;
+                // });
     
-                // Get followers list
-                const followersList = await db.select().from(followDbTable).whereIn('followed_id', followedIds);
+                // // Get followers list
+                // const followersList = await db.select().from(followDbTable).whereIn('followed_id', followedIds);
     
-                if (followersList && followersList.length > 0) {
+                const res = await this.getFollowers();
+
+                if (res.followersList && res.followersList.length > 0) {
                     // Create new Map with unique followers
                     const followerMap = new Map();
         
-                    followersList.forEach(el => {
+                    res.followersList.forEach(el => {
                         followerMap.set(el.follower_id, el);
                     });
         
                     // Adding trail_id and followed_id in ids array
                     followerMap.forEach((value, key) => {
-                        for (let i = 0; i < allTrails.length; i++) {
-                            if (value.followed_id == allTrails[i].trail_id) {
+                        for (let i = 0; i < res.allTrails.length; i++) {
+                            if (value.followed_id == res.allTrails[i].trail_id) {
                                 ids.push({
-                                    trail_id: allTrails[i].trail_id,
+                                    trail_id: res.allTrails[i].trail_id,
                                     trail_follow_id: value.trail_follow_id,
                                     follower_id: value.follower_id
                                 });
@@ -236,14 +264,14 @@ class BaseDao {
                     });
 
                     // Create notification of latest trail
-                    const lastTrailId = allTrails[allTrails.length - 1].trail_data_id;
+                    const lastTrailId = res.allTrails[res.allTrails.length - 1].trail_data_id;
 
                     const notificationData = [{
                         trailUrl: `https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${lastTrailId}?user_id=${userId}`
                     }];                    
         
                     // Creating notification url
-                    // allTrails.forEach(el => {
+                    // res.allTrails.forEach(el => {
                     //     // Url changable as per domain
                     //     notificationUrl.push(`https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}?user_id=${userId}`);
                     // });
@@ -283,6 +311,29 @@ class BaseDao {
         socket.on('disconnect', () => {
             console.log('Socket is disconnected');
         });
+    };
+
+    async getFollowers() {
+        try {
+            // Get all trails of user
+            const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
+    
+            // Create new array with followed_ids
+            const followedIds = allTrails.map(trail => {
+                return trail.trail_id;
+            });
+
+            // Get followers list
+            const followersList = await db.select().from(followDbTable).whereIn('followed_id', followedIds);
+
+            return {
+                followersList,
+                allTrails
+            };
+        } catch (err) {
+            console.log(err);
+            return err;
+        }
     };
 
     // Uploading profile image file into cloud
