@@ -60,6 +60,16 @@ function getAllTrailits(data) {
         });
 };
 
+function trailUpdate(data) {
+    return trailitDao.updateTrailIntoDb(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        })
+}
+
 function trailitUpdate(data) {
     return trailitDao.updateTrailitIntoDb(data)
         .then(result => {
@@ -87,6 +97,7 @@ module.exports = {
     fileUpload,
     getTrailit,
     getAllTrailits,
+    trailUpdate,
     trailitUpdate,
     trailitDelete
 };

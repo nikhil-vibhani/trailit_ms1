@@ -68,6 +68,7 @@ create table user_tour_trail_data (
     selector text,
     unique_target varchar (50),
     class varchar (200),
+    flag varchar (50),
     type tooltip_type_enum not null,
     media_type fileType_enum not null,
     created varchar (50) not null,

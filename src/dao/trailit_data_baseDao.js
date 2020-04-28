@@ -33,12 +33,16 @@ class BaseDao {
 
     // Check for trailit data
     async checkForExistingTrailitData(data) {
-        try {            
-            // Check for existing trailit data
-            // const result = await client.query(`SELECT * FROM ${this.table} WHERE trail_data_id = ${data.trail_data_id}`);
+        try {
+            let result;
+            if (data.trail_id) {
+                // Checking existing trailit data using KNEX
+                result = await db.select().from(this.table).where({ trail_id: data.trail_id });
 
-            // Checking existing trailit data using KNEX
-            const result = await db.select().from(this.table).where({ trail_data_id: data.trail_data_id });
+            } else if (data.trail_data_id) {
+                // Checking existing trailit data using KNEX
+                result = await db.select().from(this.table).where({ trail_data_id: data.trail_data_id });
+            }
 
             return result;
         } catch (err) {
@@ -429,7 +433,7 @@ class BaseDao {
     };
 
     // Read trailit files
-    async readTrailitAllData(data) {
+    async readTrailitAllData(data) {        
         try {
             // Get user's all trails result using Knex 
             const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
@@ -505,6 +509,42 @@ class BaseDao {
             // return results
             return {
                 result: finalArray,
+                statusCode: '200'
+            };
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // Update trailit file using trail id and flag
+    async updateTrailData(data) {
+        try {
+            // Check if trailit file exist
+            const result = await this.checkForExistingTrailitData(data);
+
+            if (!result || result.length == 0) {    
+                return trailitDataMapper.trailitDataNotExist();
+            }
+
+            // Check for previeous continue flag
+            const response = await db.select().from(this.table).where({ flag: 'continue' });
+
+            if (response && response.length > 0) {
+                // Remove that flag from that trail
+                await db(this.table).where({ trail_id: response[0].trail_id }).update({ flag: '' });
+            }
+
+            // Updating trailit file using Knex
+            const res = await db(this.table).where({ trail_id: data.trail_id }).update({ flag: data.flag }, ['*']);
+            
+            if (!res || res.length == 0) {
+                return trailitDataMapper.trailitDataNotUpdated();
+            }
+    
+            // Return result
+            return {
+                result: res[0],
                 statusCode: '200'
             };
 

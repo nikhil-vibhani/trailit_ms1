@@ -49,6 +49,21 @@ function updateTrailitDataValidation(req) {
     }
 };
 
+function trailitDataValidationForUpdate(req) {
+    const { trail_id, flag } = req.request.body;
+    const errors = [];
+
+    if (!trail_id) {
+        errors.push({ code: 500, message:  trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
+    } else if (flag === undefined) {
+        errors.push({ code: 500, message: trailit_DataCont.MESSAGES.flagCantBeEmpty });
+    }
+
+    if (errors && errors.length > 0) {
+        return validationError(errors);
+    }
+};
+
 const validationError = (errors) => {
     if (errors && errors.length > 0) {
         return exception.getCustomErrorException(trailit_DataCont.MESSAGES.ValidationError, errors);
@@ -57,5 +72,6 @@ const validationError = (errors) => {
 
 module.exports = {
     createTrailitDataValidation,
-    updateTrailitDataValidation
+    updateTrailitDataValidation,
+    trailitDataValidationForUpdate
 };

@@ -122,6 +122,28 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour/:user_id`, async (
         });
 });
 
+// Update trails data by flag and trail_id
+trailitDataRoute.put(`${BASE_URL}updateTrail_trail_data_tour`, async (ctx, next) => {
+    // Validate body
+    const errors = await validators.trailitDataValidationForUpdate(ctx);
+    if (errors && errors.errors.length > 0) {
+        return resHndlr.sendError(ctx, errors.errors[0]);
+    } 
+
+    const trailitData = {
+        trail_id: ctx.request.body.trail_id,
+        flag: ctx.request.body.flag
+    };
+
+    await taskFacade.updateTrail(trailitData)
+        .then(result => {
+            resHndlr.sendSuccess(ctx, result);
+        })
+        .catch(err => {
+            resHndlr.sendError(ctx, err);
+        });
+});
+
 // Update trail data by id
 trailitDataRoute.put(`${BASE_URL}updateTrailit_trail_data_tour/:trail_data_id`, async (ctx, next) => {
     // Validate body    

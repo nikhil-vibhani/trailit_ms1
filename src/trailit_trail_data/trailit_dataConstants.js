@@ -1,4 +1,6 @@
 const MESSAGES = {
+    trail_idCantBeEmpty: 'Trail id cannot be empty',
+    flagCantBeEmpty: 'Flag cannot be empty',
     ValidationError: 'Validation errors.',
     trail_file_idCantBeEmpty: 'Trail data id cannot be empty.',
     user_idCantBeEmpty: 'User id cannot be empty.',
