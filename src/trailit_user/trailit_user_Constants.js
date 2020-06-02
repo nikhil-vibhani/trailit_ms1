@@ -11,7 +11,8 @@ const MESSAGES = {
 	InvalidEmail: 'invalid email',
 	validationError: 'Validation errors',
 	UserIdCantEmpty: 'User id cannot be empty',
-	UserIdRequired: 'User id required'
+	UserIdRequired: 'User id required',
+	trailNameRequired: 'Trail Name required'
 };
 
 module.exports = {

@@ -87,7 +87,7 @@ class BaseDao {
 
             return {
                 result: {
-                    message: 'User follow previewUsers\'s trails',
+                    message: userFollowedTrails.length > 0 ? 'Following' : 'Not following',
                     count: userFollowedTrails
                 },
                 statusCode: '200'

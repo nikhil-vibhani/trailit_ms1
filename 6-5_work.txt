@@ -1,0 +1,15 @@
+/*
+    working
+*/
+
+-> Created api trailit_trail_data
+
+-> Created api trailit_trail_follow
+
+-> Created api trailit_trail_notification
+
+-> Created api for image file, video file and audio file
+
+-> Socket integration for user notification
+
+-> Database table creation and upadate as per received data from api

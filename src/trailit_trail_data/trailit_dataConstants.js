@@ -13,8 +13,8 @@ const MESSAGES = {
     element_contentCantBeEmpty: 'Element_content cannot be empty.',
     createdCantBeEmpty: 'Created cannot be empty.',
     updatedCantBeEmpty: 'Updated cannot be empty.',
-    data_typeValueMustBeAudioOrVideoOrTextOrPicture: 'Data type value must be Audio or Video or Text or Picture.',
-    data_typeMustBeAudioOrVideoOrTooltip: 'Data type value must be Audio or Video or Tooltip',
+    data_typeValueMustBeAudioOrVideoOrTextOrImageOrModal: 'Data type value must be Audio or Video or Text or Image or Modal.',
+    data_typeMustBeAudioOrVideoOrTooltipOrModal: 'Data type value must be Audio or Video or Tooltip or Modal',
     updateValueCantBeEmpty: 'Update value cannot be empty'
 };
 

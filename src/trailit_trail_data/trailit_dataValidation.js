@@ -3,22 +3,23 @@ const exception = require('../customExceptions');
 
 function createTrailitDataValidation(req) {    
     const dataArray = req.request.body;
-    // const { trail_id, title, type, mediaType, url, created } = req.request.body;
     const errors = [];
     
     dataArray.forEach(el => {
-        if (!el.userId) {
-            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.user_idCantBeEmpty });  
+        if (!el.user_id) {
+            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.user_idCantBeEmpty });
+        } else if (!el.trail_id) {
+            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
         } else if (!el.title) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.titleCantBeEmpty });
         } else if (!el.type) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.data_typeCantBeEmpty });
-        } else if (el.type !== 'audio' && el.type !== 'video' && el.type !== 'tooltip') {
-            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.data_typeMustBeAudioOrVideoOrTooltip });
+        } else if (el.type !== 'audio' && el.type !== 'video' && el.type !== 'tooltip' && el.type !== 'modal') {
+            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.data_typeMustBeAudioOrVideoOrTooltipOrModal });
         } else if (!el.mediaType) {
            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.media_typeCantBeEmpty });
-        } else if (el.mediaType !== 'audio' && el.mediaType !== 'video' && el.mediaType !== 'text' && el.mediaType !== 'picture') {
-            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.data_typeValueMustBeAudioOrVideoOrTextOrPicture });
+        } else if (el.mediaType !== 'audio' && el.mediaType !== 'video' && el.mediaType !== 'text' && el.mediaType !== 'image' && el.mediaType !== 'modal') {
+            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.data_typeValueMustBeAudioOrVideoOrTextOrImageOrModal });
         } else if (!el.url) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.urlCantBeEmpty });
         } else if (!el.created) {
@@ -64,14 +65,28 @@ function trailitDataValidationForUpdate(req) {
     }
 };
 
-const validationError = (errors) => {
-    if (errors && errors.length > 0) {
-        return exception.getCustomErrorException(trailit_DataCont.MESSAGES.ValidationError, errors);
+const indexSingleTrailValidation = (req) => {
+    const { trail_id, user_id } = req.params;
+    const errors = [];
+
+    if (!trail_id) {
+        errors.push({ code: 500, message:  trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
+    } else if (!user_id) {
+        errors.push({ code: 500, message: trailit_DataCont.MESSAGES.user_idCantBeEmpty });
     }
+
+    if (errors && errors.length > 0) {
+        return validationError(errors);
+    }
+};  
+
+const validationError = (errors) => {
+    return exception.getCustomErrorException(trailit_DataCont.MESSAGES.ValidationError, errors);
 };
 
 module.exports = {
     createTrailitDataValidation,
     updateTrailitDataValidation,
-    trailitDataValidationForUpdate
+    trailitDataValidationForUpdate,
+    indexSingleTrailValidation
 };

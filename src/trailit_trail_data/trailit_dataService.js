@@ -40,6 +40,16 @@ function fileUpload(data) {
         })
 };
 
+function singleTrailIndex(taskData) {
+    return trailitDao.indexSingleTrail(taskData)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function getTrailit(taskData) {
     return trailitDao.getTrailitFromDb(taskData)
         .then(result => {
@@ -95,6 +105,7 @@ module.exports = {
     profileImage,
     mediaUpload,
     fileUpload,
+    singleTrailIndex,
     getTrailit,
     getAllTrailits,
     trailUpdate,

@@ -40,6 +40,16 @@ function uploadFile(data) {
         })
 }
 
+function indexSingleTrail(data) {
+    return taskService.singleTrailIndex(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function getSingleTrailit(data) {
     return taskService.getTrailit(data)
         .then(result => {
@@ -95,6 +105,7 @@ module.exports = {
     uploadProfileImage,
     uploadMedia,
     uploadFile,
+    indexSingleTrail,
     getSingleTrailit,
     getTrailits,
     updateTrail,

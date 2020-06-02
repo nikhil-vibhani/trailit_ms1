@@ -6,6 +6,14 @@ const AppUtil = require('../appUtils');
 
 //========================== Load Modules End ==============================================
 
+function createUserTrail(data) {
+	return trailUserDao.createNewTrail(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 function getAllUserTrail(data) {
 	return trailUserDao.getAllTrail(data)
 		.then(result => {
@@ -17,7 +25,8 @@ function getAllUserTrail(data) {
 //========================== Export Module Start ==============================
 
 module.exports = {
-	getAllUserTrail,
+	createUserTrail,
+	getAllUserTrail
 };
 
 //========================== Export Module End ===============================

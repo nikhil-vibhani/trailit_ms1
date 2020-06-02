@@ -47,6 +47,16 @@ function uploadFile(data) {
         });
 }
 
+function indexSingleTrail(data) {
+    return trailitFileDao.indexTrailData(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function getTrailitFromDb(data) {
     return trailitFileDao.readTrailitData(data)
         .then(result => {
@@ -102,6 +112,7 @@ module.exports = {
     uploadProfileImage,
     uploadMedia,
     uploadFile,
+    indexSingleTrail,
     getTrailitFromDb,
     getTrailitsFromDb,
     updateTrailIntoDb,

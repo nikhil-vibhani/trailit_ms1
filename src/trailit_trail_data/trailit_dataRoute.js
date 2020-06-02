@@ -14,15 +14,12 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
-
+    
     const data = ctx.request.body;
-    if (data === []) {
-        resHndlr.sendError(ctx, 'data could not be empty!');
-    }
-
     const trailitData = data.map(el => {
         return {
-            userId: el.userId,
+            user_id: el.user_id,
+            trail_id: el.trail_id,
             title: el.title,
             description: el.description,
             type: el.type,
@@ -84,6 +81,30 @@ trailitDataRoute.post(`${BASE_URL}uploadTrail_file_image`, single('file'), async
     };
 
     await taskFacade.uploadFile(fileData)
+        .then(result => {
+            resHndlr.sendSuccess(ctx, result);
+        })
+        .catch(err => {
+            resHndlr.sendError(ctx, err);
+        });
+});
+
+// Get trail data by trail_id and user_id
+trailitDataRoute.get(`${BASE_URL}indexTrailit_trail_data_tour/:user_id/:trail_id`, async (ctx) => {
+
+    // Validating data
+    const errors = await validators.indexSingleTrailValidation(ctx);
+
+    if (errors && errors.errors.length > 0) {
+        return resHndlr.sendError(ctx, errors.errors);
+    }
+
+    const trailitData = {
+        trail_id: ctx.params.trail_id,
+        user_id: ctx.params.user_id
+    };
+
+    await taskFacade.indexSingleTrail(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
         })

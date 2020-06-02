@@ -13,6 +13,14 @@ const trailUserService = require('./trailit_user_Service');
  * @function testUserTour
  */
 
+function createNewTrail(data) {
+	return trailUserService.createUserTrail(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 function getAllTrails(data) {
 	return trailUserService.getAllUserTrail(data)
 		.then(result => {
@@ -25,7 +33,8 @@ function getAllTrails(data) {
 //========================== Export Module Start ==============================
 
 module.exports = {
-	getAllTrails,
+	createNewTrail,
+	getAllTrails
 };
 
 //========================== Export Module End ===============================

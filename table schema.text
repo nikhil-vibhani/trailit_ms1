@@ -45,7 +45,7 @@ create table user_tour_detail (
 
 create table user_tour_sort (
     user_tour_sort_id serial primary key,
-    trail_sortId varchar (50),
+    trail_sortid varchar (50),
     trail_id varchar (50) not null,
     user_id varchar (50) not null
 );
@@ -53,9 +53,9 @@ create table user_tour_sort (
 
 // user_tour_trail_data table schema
 
-create type tooltip_type_enum as enum ('tooltip', 'audio', 'video');
+create type tooltip_type_enum as enum ('tooltip', 'audio', 'video', 'modal');
 
-create type fileType_enum as enum ('audio', 'video', 'text', 'picture');
+create type fileType_enum as enum ('audio', 'video', 'text', 'picture', 'modal');
 
 create table user_tour_trail_data (
     trail_data_id serial primary key,
@@ -97,5 +97,6 @@ create table user_tour_trail_notification (
     flag flag_enum not null,
     created varchar (50) not null,
     updated varchar (50),
-    user_id varchar (50) not null
+    user_id varchar (50) not null,
+    creator_id varchar (50) not null
 );

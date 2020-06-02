@@ -54,40 +54,36 @@ class BaseDao {
     async insertTrailitData(data) {
         try {
             // Create new array for user_tour table table and get userId and title
-            const userDataArray = data.map(obj => {
+            // const userDataArray = data.map(obj => {
+            //     return {
+            //         user_id: obj.userId,
+            //         trail_name: obj.title
+            //     };  
+            // });       
+
+            // // Insert into USER_TOUR table 
+            // const res = await db(this.userTable).insert(userDataArray, ['*']);
+
+            // if (!res || res.length == 0) {
+            //     return trailitDataMapper.trailitNotCreated();
+            // }
+
+            // Modified array
+            const dataArray = data.map(obj => {
                 return {
-                    user_id: obj.userId,
-                    trail_name: obj.title
-                };  
-            });       
-
-            // Insert into USER_TOUR table 
-            const res = await db(this.userTable).insert(userDataArray, ['*']);
-
-            if (!res || res.length == 0) {
-                return trailitDataMapper.trailitNotCreated();
-            }
-
-            // Create new array for user_tour_trail_data table and remove userId and trailIndex from data array
-            const dataArray = data.map((obj, i) => {
-                for (let j = 0; j <res.length; j++) {
-                    if (i === j) {
-                        return {
-                            trail_id: res[j].trail_id,
-                            title: obj.title,
-                            description: obj.description,
-                            web_url: obj.web_url,
-                            url: obj.url,
-                            type: obj.type,
-                            media_type: obj.media_type,
-                            path: obj.path,
-                            selector: obj.selector,
-                            class: obj.class,
-                            unique_target: obj.unique_target,
-                            created: obj.created
-                        };
-                    }
-                }
+                    trail_id: obj.trail_id,
+                    title: obj.title,
+                    description: obj.description,
+                    web_url: obj.web_url,
+                    url: obj.url,
+                    type: obj.type,
+                    media_type: obj.media_type,
+                    path: obj.path,
+                    selector: obj.selector,
+                    class: obj.class,
+                    unique_target: obj.unique_target,
+                    created: obj.created
+                };
             });
 
             // Inserting data into USER_TOUR_TRAIL_DATA
@@ -103,7 +99,7 @@ class BaseDao {
                     if (el.created == data[i].created) {
                         return {
                             trail_id: el.trail_id,
-                            user_id: data[i].userId,
+                            user_id: data[i].user_id,
                             trail_sortid: data[i].trailIndex
                         };
                     }
@@ -117,71 +113,6 @@ class BaseDao {
                 return trailitDataMapper.trailitNotAddedToSort();
             }
 
-            // const notificationUrl = [];
-            // const ids = [];
-
-            // // Get all trails of user
-            // const allTrails = await db.select().from(this.userTable).where({ user_id: data[0].userId });
-
-            // // Create new array with followed_ids
-            // const followedIds = allTrails.map(trail => {
-            //     return trail.trail_id;
-            // });
-
-            // // Get followers list
-            // const followersList = await db.select().from(this.followTable).whereIn('followed_id', followedIds);
-
-            // if (followersList && followersList.length > 0) {
-            //     // Create new Map with unique followers
-            //     const followerMap = new Map();
-    
-            //     followersList.forEach(el => {
-            //         followerMap.set(el.follower_id, el);
-            //     });
-    
-            //     // Adding trail_id and followed_id in ids array
-            //     followerMap.forEach((value, key) => {
-            //         for (let i = 0; i < allTrails.length; i++) {
-            //             if (value.followed_id == allTrails[i].trail_id) {
-            //                 ids.push({
-            //                     trail_id: allTrails[i].trail_id,
-            //                     trail_follow_id: value.trail_follow_id,
-            //                     follower_id: value.follower_id
-            //                 });
-            //             }
-            //         }
-            //     });
-    
-            //     // Creating notification url
-            //     dataRes.forEach(el => {
-            //         // Url changable as per domain
-            //         notificationUrl.push(`https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}?user_id=${data[0].userId}`);
-            //     });
-    
-            //     // Creating notification array to bulk insert
-            //     const notifiArray = ids.map(el => {
-            //         return {
-            //             trail_follow_id: el.trail_follow_id,
-            //             trail_id: el.trail_id,
-            //             notification: notificationUrl,
-            //             flag: 'unread',
-            //             created: new Date().getTime(),
-            //             user_id: el.follower_id
-            //         };  
-            //     });
-    
-            //     const notifiRes = await db(this.notfiTable).insert(notifiArray, ['*']);
-    
-            //     if (!notifiRes || notifiRes == 0) {
-            //         return trailitDataMapper.trailitNotifiNotAdded();
-            //     }
-
-            //     // Send notification using Socket.io
-            //     followerMap.forEach(key => {
-            //         // Send message to each rooms
-            //         ioSocket.in(key.follower_id).emit('notification', notificationUrl);
-            //     });
-            // }      
             return {
                 result: dataRes,
                 statusCode: '201'
@@ -231,7 +162,7 @@ class BaseDao {
         });
         
         // Get send notification
-        socket.on('sendNotification', async () => {
+        socket.on('sendNotification', async (creatorId) => {
             try {
                 // // Get all trails of user
                 // const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
@@ -288,7 +219,8 @@ class BaseDao {
                             notification: notificationData,
                             flag: 'unread',
                             created: new Date().getTime(),
-                            user_id: el.follower_id
+                            user_id: el.follower_id,
+                            creator_id: creatorId
                         };  
                     });
         
@@ -388,10 +320,39 @@ class BaseDao {
         }
     };
 
+    // Read single trailit file by trail_id and user_id
+    async indexTrailData(data) {
+        const { trail_id, user_id } = data;
+
+        try {
+            // Check for existing trail by trail_id and user_id
+            const res = await db.select().from(this.userTable).where({ trail_id: trail_id, user_id });
+
+            if (!res || res.length == 0) {
+                return trailitDataMapper.trailitDataNotExist();
+            }
+
+            // Get trail data by trail_id
+            const result = await db.select().from(this.table).where({ trail_id: res[0].trail_id });
+
+            if (!result || result.length == 0) {
+                return trailitDataMapper.trailitDataNotExist();
+            }
+
+            return {
+                result,
+                statusCode: '200'
+            };
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // Read single trailit file
     async readTrailitData(data) {
         try {
-            // Check for existing task
+            // Check for existing trail
             const res = await this.checkForExistingTrailitData(data);
 
             if (!res || res.length == 0) {
