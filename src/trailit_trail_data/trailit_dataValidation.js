@@ -25,7 +25,7 @@ function createTrailitDataValidation(req) {
         } else if (!el.created) {
            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.createdCantBeEmpty });
         }
-    })    
+    });
 
     if (errors && errors.length > 0) {
         return validationError(errors);
