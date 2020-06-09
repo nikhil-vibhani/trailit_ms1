@@ -6,10 +6,10 @@ function createTrailitDataValidation(req) {
     const errors = [];
     
     dataArray.forEach(el => {
-        if (!el.user_id) {
+        if (!el.userId) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.user_idCantBeEmpty });
-        } else if (!el.trail_id) {
-            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
+        // } else if (!el.trail_id) {
+        //     errors.push({ code: 500, message: trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
         } else if (!el.title) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.titleCantBeEmpty });
         } else if (!el.type) {

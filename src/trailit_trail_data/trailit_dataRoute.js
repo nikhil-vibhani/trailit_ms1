@@ -18,8 +18,8 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
     const data = ctx.request.body;
     const trailitData = data.map(el => {
         return {
-            user_id: el.user_id,
-            trail_id: el.trail_id,
+            user_id: el.userId,
+            // trail_id: el.trail_id,
             title: el.title,
             description: el.description,
             type: el.type,

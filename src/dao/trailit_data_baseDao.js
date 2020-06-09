@@ -54,37 +54,59 @@ class BaseDao {
     async insertTrailitData(data) {
         try {
             // Create new array for user_tour table table and get userId and title
-            // const userDataArray = data.map(obj => {
-            //     return {
-            //         user_id: obj.userId,
-            //         trail_name: obj.title
-            //     };  
-            // });       
-
-            // // Insert into USER_TOUR table 
-            // const res = await db(this.userTable).insert(userDataArray, ['*']);
-
-            // if (!res || res.length == 0) {
-            //     return trailitDataMapper.trailitNotCreated();
-            // }
-
-            // Modified array
-            const dataArray = data.map(obj => {
+            const userDataArray = data.map(obj => {
                 return {
-                    trail_id: obj.trail_id,
-                    title: obj.title,
-                    description: obj.description,
-                    web_url: obj.web_url,
-                    url: obj.url,
-                    type: obj.type,
-                    media_type: obj.media_type,
-                    path: obj.path,
-                    selector: obj.selector,
-                    class: obj.class,
-                    unique_target: obj.unique_target,
-                    created: obj.created
-                };
+                    user_id: obj.user_id,
+                    trail_name: obj.title
+                };  
+            });       
+
+            // Insert into USER_TOUR table 
+            const res = await db(this.userTable).insert(userDataArray, ['*']);
+
+            if (!res || res.length == 0) {
+                return trailitDataMapper.trailitNotCreated();
+            }
+
+            // Create new array for user_tour_trail_data table and remove userId and trailIndex from data array
+            const dataArray = data.map((obj, i) => {
+                for (let j = 0; j <res.length; j++) {
+                    if (i === j) {
+                        return {
+                            trail_id: res[j].trail_id,
+                            title: obj.title,
+                            description: obj.description,
+                            web_url: obj.web_url,
+                            url: obj.url,
+                            type: obj.type,
+                            media_type: obj.media_type,
+                            path: obj.path,
+                            selector: obj.selector,
+                            class: obj.class,
+                            unique_target: obj.unique_target,
+                            created: obj.created
+                        };
+                    }
+                }
             });
+
+            // // Modified array
+            // const dataArray = data.map(obj => {
+            //     return {
+            //         trail_id: obj.trail_id,
+            //         title: obj.title,
+            //         description: obj.description,
+            //         web_url: obj.web_url,
+            //         url: obj.url,
+            //         type: obj.type,
+            //         media_type: obj.media_type,
+            //         path: obj.path,
+            //         selector: obj.selector,
+            //         class: obj.class,
+            //         unique_target: obj.unique_target,
+            //         created: obj.created
+            //     };
+            // });
 
             // Inserting data into USER_TOUR_TRAIL_DATA
             let dataRes = await db(this.table).insert(dataArray, ['*']);
@@ -640,19 +662,21 @@ class BaseDao {
                 return trailitDataMapper.trailitNotRemovedFromSort();
             }
 
-            // remove trailit data from user tour table 
-            const delRes = await db(this.userTable).where({ trail_id: res[0].trail_id }).delete();
+            // // remove trailit data from user tour table 
+            // const delRes = await db(this.userTable).where({ trail_id: res[0].trail_id }).delete();
 
-            if (!delRes || delRes == 0) {
-                return trailitDataMapper.trailitMainTableDataNotDeleted();
-            }
+            // console.log('delRes', delRes);
 
-            // remove trailit follow data from user tour follow table
-            const delFollow = await db(this.followTable).where({ followed_id: res[0].trail_id }).delete();
+            // if (!delRes || delRes == 0) {
+            //     return trailitDataMapper.trailitMainTableDataNotDeleted();
+            // }
 
-            if (!delFollow || delFollow == 0) {
-                return trailitDataMapper.trailitFollowNotDeleted();
-            }
+            // // remove trailit follow data from user tour follow table
+            // const delFollow = await db(this.followTable).where({ followed_id: res[0].trail_id }).delete();
+
+            // if (!delFollow || delFollow == 0) {
+            //     return trailitDataMapper.trailitFollowNotDeleted();
+            // }
 
             return {
                 result: {
