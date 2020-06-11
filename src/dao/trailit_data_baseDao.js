@@ -53,60 +53,60 @@ class BaseDao {
     // Insert new Trailit data task
     async insertTrailitData(data) {
         try {
-            // Create new array for user_tour table table and get userId and title
-            const userDataArray = data.map(obj => {
-                return {
-                    user_id: obj.user_id,
-                    trail_name: obj.title
-                };  
-            });       
-
-            // Insert into USER_TOUR table 
-            const res = await db(this.userTable).insert(userDataArray, ['*']);
-
-            if (!res || res.length == 0) {
-                return trailitDataMapper.trailitNotCreated();
-            }
-
-            // Create new array for user_tour_trail_data table and remove userId and trailIndex from data array
-            const dataArray = data.map((obj, i) => {
-                for (let j = 0; j <res.length; j++) {
-                    if (i === j) {
-                        return {
-                            trail_id: res[j].trail_id,
-                            title: obj.title,
-                            description: obj.description,
-                            web_url: obj.web_url,
-                            url: obj.url,
-                            type: obj.type,
-                            media_type: obj.media_type,
-                            path: obj.path,
-                            selector: obj.selector,
-                            class: obj.class,
-                            unique_target: obj.unique_target,
-                            created: obj.created
-                        };
-                    }
-                }
-            });
-
-            // // Modified array
-            // const dataArray = data.map(obj => {
+            // // Create new array for user_tour table table and get userId and title
+            // const userDataArray = data.map(obj => {
             //     return {
-            //         trail_id: obj.trail_id,
-            //         title: obj.title,
-            //         description: obj.description,
-            //         web_url: obj.web_url,
-            //         url: obj.url,
-            //         type: obj.type,
-            //         media_type: obj.media_type,
-            //         path: obj.path,
-            //         selector: obj.selector,
-            //         class: obj.class,
-            //         unique_target: obj.unique_target,
-            //         created: obj.created
-            //     };
+            //         user_id: obj.user_id,
+            //         trail_name: obj.title
+            //     };  
+            // });       
+
+            // // Insert into USER_TOUR table 
+            // const res = await db(this.userTable).insert(userDataArray, ['*']);
+
+            // if (!res || res.length == 0) {
+            //     return trailitDataMapper.trailitNotCreated();
+            // }
+
+            // // Create new array for user_tour_trail_data table and remove userId and trailIndex from data array
+            // const dataArray = data.map((obj, i) => {
+            //     for (let j = 0; j <res.length; j++) {
+            //         if (i === j) {
+            //             return {
+            //                 trail_id: res[j].trail_id,
+            //                 title: obj.title,
+            //                 description: obj.description,
+            //                 web_url: obj.web_url,
+            //                 url: obj.url,
+            //                 type: obj.type,
+            //                 media_type: obj.media_type,
+            //                 path: obj.path,
+            //                 selector: obj.selector,
+            //                 class: obj.class,
+            //                 unique_target: obj.unique_target,
+            //                 created: obj.created
+            //             };
+            //         }
+            //     }
             // });
+
+            // Modified array
+            const dataArray = data.map(obj => {
+                return {
+                    trail_id: obj.trail_id,
+                    title: obj.title,
+                    description: obj.description,
+                    web_url: obj.web_url,
+                    url: obj.url,
+                    type: obj.type,
+                    media_type: obj.media_type,
+                    path: obj.path,
+                    selector: obj.selector,
+                    class: obj.class,
+                    unique_target: obj.unique_target,
+                    created: obj.created
+                };
+            });
 
             // Inserting data into USER_TOUR_TRAIL_DATA
             let dataRes = await db(this.table).insert(dataArray, ['*']);
@@ -116,12 +116,13 @@ class BaseDao {
             }
 
             // Create array for user_tour_sort table and get trail_id 
-            const sortArray = dataRes.map((el, i) => {
+            const sortArray = dataRes.map((el, j) => {
                 for (let i = 0; i < data.length; i++) {
                     if (el.created == data[i].created) {
                         return {
                             trail_id: el.trail_id,
                             user_id: data[i].user_id,
+                            trail_data_id: el.trail_data_id,
                             trail_sortid: data[i].trailIndex
                         };
                     }
@@ -439,7 +440,7 @@ class BaseDao {
             if (sortedTrails && sortedTrails.length > 0) {
                 res.forEach(el => {
                     for (let i = 0; i < sortedTrails.length; i++) {
-                        if (el.trail_id === sortedTrails[i].trail_id) {
+                        if (el.trail_data_id == sortedTrails[i].trail_data_id) {
                             el.trail_sortId = sortedTrails[i].trail_sortid;
                         }
                     }
@@ -500,7 +501,7 @@ class BaseDao {
         }
     };
 
-    // Update trailit file using trail id and flag
+    // Update trailit file using trail data id and flag
     async updateTrailData(data) {
         try {
             // Check if trailit file exist
@@ -510,16 +511,19 @@ class BaseDao {
                 return trailitDataMapper.trailitDataNotExist();
             }
 
-            // Check for previeous continue flag
-            const response = await db.select().from(this.table).where({ flag: 'continue' });
+            // // Check for previeous continue flag
+            // const response = await db.select().from(this.table).where({ flag: 'continue' });
 
-            if (response && response.length > 0) {
-                // Remove that flag from that trail
-                await db(this.table).where({ trail_id: response[0].trail_id }).update({ flag: '' });
-            }
+            // if (response && response.length > 0) {
+            //     // Remove that flag from that trail
+            //     await db(this.table).where({ trail_id: response[0].trail_id }).update({ flag: '' });
+            // }
+
+            // Update old flag to empty string
+            await db(this.table).where({ flag: 'continue' }).update({ flag: '' });
 
             // Updating trailit file using Knex
-            const res = await db(this.table).where({ trail_id: data.trail_id }).update({ flag: data.flag }, ['*']);
+            const res = await db(this.table).where({ trail_data_id: data.trail_data_id }).update({ flag: data.flag }, ['*']);
             
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotUpdated();

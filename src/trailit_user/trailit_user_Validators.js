@@ -18,7 +18,7 @@ function createUserTrailValidation(ctx) {
     }
 };
 
-// Get all user trail validation
+// Get all user trail and get trail id validation
 function validation(ctx) {
     const errors = [];
     const userId = ctx.params.user_id;

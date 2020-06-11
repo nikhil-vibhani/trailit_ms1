@@ -18,9 +18,18 @@ function getAllTrail(data) {
         .catch(err => console.log(err));
 };
 
+function getTrailId(data) {
+    return trailUserDao.indexTrailId(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => console.log(err));
+};
+
 //========================== Export Module Start ===============================
 
 module.exports = {
     createNewTrail,
-    getAllTrail
+    getAllTrail,
+    getTrailId
 };

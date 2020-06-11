@@ -22,11 +22,20 @@ function getAllUserTrail(data) {
 		.catch(err => console.log(err));
 };
 
+function getUserTrailId(data) {
+	return trailUserDao.getTrailId(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 //========================== Export Module Start ==============================
 
 module.exports = {
 	createUserTrail,
-	getAllUserTrail
+	getAllUserTrail,
+	getUserTrailId
 };
 
 //========================== Export Module End ===============================

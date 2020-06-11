@@ -8,8 +8,8 @@ function createTrailitDataValidation(req) {
     dataArray.forEach(el => {
         if (!el.userId) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.user_idCantBeEmpty });
-        // } else if (!el.trail_id) {
-        //     errors.push({ code: 500, message: trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
+        } else if (!el.trail_id) {
+            errors.push({ code: 500, message: trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
         } else if (!el.title) {
             errors.push({ code: 500, message: trailit_DataCont.MESSAGES.titleCantBeEmpty });
         } else if (!el.type) {
@@ -50,12 +50,12 @@ function updateTrailitDataValidation(req) {
     }
 };
 
-function trailitDataValidationForUpdate(req) {
-    const { trail_id, flag } = req.request.body;
+function trailitDataValidationForUpdate(req, next) {
+    const { trail_data_id, flag } = req.request.body;
     const errors = [];
 
-    if (!trail_id) {
-        errors.push({ code: 500, message:  trailit_DataCont.MESSAGES.trail_idCantBeEmpty });
+    if (!trail_data_id) {
+        errors.push({ code: 500, message:  trailit_DataCont.MESSAGES.trail_data_idCantBeEmpty });
     } else if (flag === undefined) {
         errors.push({ code: 500, message: trailit_DataCont.MESSAGES.flagCantBeEmpty });
     }
@@ -80,7 +80,7 @@ const indexSingleTrailValidation = (req) => {
     }
 };  
 
-const validationError = (errors) => {
+const validationError = (errors,) => {
     return exception.getCustomErrorException(trailit_DataCont.MESSAGES.ValidationError, errors);
 };
 

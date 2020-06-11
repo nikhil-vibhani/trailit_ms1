@@ -29,12 +29,21 @@ function getAllTrails(data) {
 		.catch(err => console.log(err));
 };
 
+function getTrailId(data) {
+	return trailUserService.getUserTrailId(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 
 //========================== Export Module Start ==============================
 
 module.exports = {
 	createNewTrail,
-	getAllTrails
+	getAllTrails,
+	getTrailId
 };
 
 //========================== Export Module End ===============================

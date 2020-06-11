@@ -7,7 +7,7 @@ class BaseDao {
     };
 
     // Check for user's trail id
-    async getTrailIdOfUser(data) {
+    async indexTrailId(data) {
         try {
             // Get user's trail id
             const result = await db.select().from(this.userTable).where({ user_id: data.userId });
@@ -34,7 +34,7 @@ class BaseDao {
     // async getAllTrails(data) {
     //     try {
     //         // Get user's trail id
-    //         const res = await this.getTrailIdOfUser(data);
+    //         const res = await this.indexTrailId(data);
 
     //         // Get all trailit file of user
     //         const fileResult = await db.select().from(this.trailFileTable).where({ trail_id: res.trail_id });

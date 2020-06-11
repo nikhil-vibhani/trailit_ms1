@@ -14,12 +14,12 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
-    
+
     const data = ctx.request.body;
     const trailitData = data.map(el => {
         return {
             user_id: el.userId,
-            // trail_id: el.trail_id,
+            trail_id: el.trail_id,
             title: el.title,
             description: el.description,
             type: el.type,
@@ -152,7 +152,7 @@ trailitDataRoute.put(`${BASE_URL}updateTrail_trail_data_tour`, async (ctx, next)
     } 
 
     const trailitData = {
-        trail_id: ctx.request.body.trail_id,
+        trail_data_id: ctx.request.body.trail_data_id,
         flag: ctx.request.body.flag
     };
 
