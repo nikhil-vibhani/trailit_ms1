@@ -149,7 +149,7 @@ class BaseDao {
     // Socket connection
     socket(socket, io) {
         socketIo = socket;
-        ioSocket = io;        
+        ioSocket = io;
         let ids = [];
 
         // Get userId from client using socket
@@ -163,7 +163,7 @@ class BaseDao {
                 if (res.followersList && res.followersList.length > 0) {
                     // Create new Map with unique followers
                     const followerMap = new Map();
-        
+
                     res.followersList.forEach(el => {
                         followerMap.set(el.follower_id, el);
                     });
@@ -173,7 +173,7 @@ class BaseDao {
                     followerMap.forEach((value, key) => {
                         userIds.push(key);
                     });
-                    
+
                     socket.emit('followerList', userIds);
                 } else {
                     socket.emit('followerList', []);
@@ -183,31 +183,31 @@ class BaseDao {
                 console.log(err);
             }
         });
-        
+
         // Get send notification
         socket.on('sendNotification', async (creatorId) => {
             try {
                 // // Get all trails of user
                 // const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
-    
+
                 // // Create new array with followed_ids
                 // const followedIds = allTrails.map(trail => {
                 //     return trail.trail_id;
                 // });
-    
+
                 // // Get followers list
                 // const followersList = await db.select().from(followDbTable).whereIn('followed_id', followedIds);
-    
+
                 const res = await this.getFollowers();
 
                 if (res.followersList && res.followersList.length > 0) {
                     // Create new Map with unique followers
                     const followerMap = new Map();
-        
+
                     res.followersList.forEach(el => {
                         followerMap.set(el.follower_id, el);
                     });
-        
+
                     // Adding trail_id and followed_id in ids array
                     followerMap.forEach((value, key) => {
                         for (let i = 0; i < res.allTrails.length; i++) {
@@ -226,14 +226,14 @@ class BaseDao {
 
                     const notificationData = [{
                         trailUrl: `https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${lastTrailId}?user_id=${userId}`
-                    }];                    
-        
+                    }];
+
                     // Creating notification url
                     // res.allTrails.forEach(el => {
                     //     // Url changable as per domain
                     //     notificationUrl.push(`https://trail.codezeros.com/trailit/api/v1/userTourDataDetail/readTrailit_trail_data_tour/${el.trail_data_id}?user_id=${userId}`);
                     // });
-        
+
                     // Creating notification array to bulk insert
                     const notifiArray = ids.map(el => {
                         return {
@@ -244,22 +244,22 @@ class BaseDao {
                             created: new Date().getTime(),
                             user_id: el.follower_id,
                             creator_id: creatorId
-                        };  
+                        };
                     });
-        
+
                     const notifiRes = await db(notifiDbTable).insert(notifiArray, ['*']);
-        
+
                     if (!notifiRes || notifiRes == 0) {
                         return trailitDataMapper.trailitNotifiNotAdded();
                     }
-    
+
                     // Send notification using Socket.io
                     followerMap.forEach(key => {
                         // Send message to each rooms
                         io.in(key.follower_id).emit('notification', notificationData);
                     });
-                } 
-                
+                }
+
             } catch (err) {
                 console.log(err);
                 socket.emit('notification', { errorMsg: 'Error while sending notification' });
@@ -276,7 +276,7 @@ class BaseDao {
         try {
             // Get all trails of user
             const allTrails = await db.select().from(userDbTable).where({ user_id: userId });
-    
+
             // Create new array with followed_ids
             const followedIds = allTrails.map(trail => {
                 return trail.trail_id;
@@ -410,96 +410,119 @@ class BaseDao {
                 result: finalObj,
                 statusCode: '200'
             };
-            
+
         } catch (err) {
             console.log(err);
         }
     };
 
     // Read trailit files
-    async readTrailitAllData(data) {        
+    async readTrailitAllData(data) {
         try {
-            // Get user's all trails result using Knex 
-            const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
+            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id left join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' order by uts.trail_sortId")
 
-            // Get sorting value of trails using user_id
-            const sortedTrails = await db.select().from(this.sortTable).where({ user_id: data.userId });
-
-            // Pushing trial ids into new array            
-            const userTrailIds = userData.map(el => {
-                return el.trail_id;
-            });
-
-            // Get trails details by trail_ids
-            let res = await db.select().from(this.table).whereIn('trail_id', userTrailIds);
-
-            if (!res || res.length == 0) {
-                return trailitDataMapper.trailitDataNotExist();
-            }
-
-            if (sortedTrails && sortedTrails.length > 0) {
-                res.forEach(el => {
-                    for (let i = 0; i < sortedTrails.length; i++) {
-                        if (el.trail_data_id == sortedTrails[i].trail_data_id) {
-                            el.trail_sortId = sortedTrails[i].trail_sortid;
-                        }
-                    }
-                });
-
-                // Sort res array by sort id
-                res.sort((a, b) => {
-                    return a.trail_sortId - b.trail_sortId;
-                });
-            }
-
-            // Get all trail's id in array
-            const trail_idArray = res.map(el => {
-                return el.trail_id;
-            });
-
-            // Get followers of that trails
-            const response = await db.select().from(this.followTable).whereIn('followed_id', trail_idArray);
-
-            // Get all followers of trail in follower object
-            let followerObj = {};
-            for (let j = 0; j < response.length; j++) {                    
-                res.forEach((el, i) => {
-                    if (el.trail_id === response[j].followed_id) {
-                        if (typeof followerObj[el.trail_id] !== 'object') {
-                            followerObj[el.trail_id] = new Array(response[j].follower_id);
-                        } else {
-                            followerObj[el.trail_id].push(response[j].follower_id);
-                        }
-                    }
-                });
-            };
-            
-            // Merge follower of trail and res in new Array
-            let finalArray = [...res];
-            finalArray.forEach(obj => {
-                for (let el in followerObj) {
-                    if (obj.trail_id === el) {
-                        obj.follower_id = followerObj[el];
-                        obj.follower_count = followerObj[el].length;
-                    } else {
-                        if (!obj.follower_id && !obj.follower_count ) {
-                            obj.follower_id = [];
-                            obj.follower_count = 0;
-                        }
-                    }
-                };
-            });
-
-            // return results
             return {
-                result: finalArray,
+                result: userData.rows,
                 statusCode: '200'
             };
+
+            // // Get user's all trails result using Knex 
+            // const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
+
+            // // Get sorting value of trails using user_id
+            // const sortedTrails = await db.select().from(this.sortTable).where({ user_id: data.userId });
+
+            // // Pushing trial ids into new array            
+            // const userTrailIds = userData.map(el => {
+            //     return el.trail_id;
+            // });
+
+            // // Get trails details by trail_ids
+            // let res = await db.select().from(this.table).whereIn('trail_id', userTrailIds);
+
+            // if (!res || res.length == 0) {
+            //     return trailitDataMapper.trailitDataNotExist();
+            // }
+
+            // if (sortedTrails && sortedTrails.length > 0) {
+            //     res.forEach(el => {
+            //         for (let i = 0; i < sortedTrails.length; i++) {
+            //             if (el.trail_data_id == sortedTrails[i].trail_data_id) {
+            //                 el.trail_sortId = sortedTrails[i].trail_sortid;
+            //             }
+            //         }
+            //     });
+
+            //     // Sort res array by sort id
+            //     res.sort((a, b) => {
+            //         return a.trail_sortId - b.trail_sortId;
+            //     });
+            // }
+
+            // // Get all trail's id in array
+            // const trail_idArray = res.map(el => {
+            //     return el.trail_id;
+            // });
+
+            // // Get followers of that trails
+            // const response = await db.select().from(this.followTable).whereIn('followed_id', trail_idArray);
+
+            // // Get all followers of trail in follower object
+            // let followerObj = {};
+            // for (let j = 0; j < response.length; j++) {
+            //     res.forEach((el, i) => {
+            //         if (el.trail_id === response[j].followed_id) {
+            //             if (typeof followerObj[el.trail_id] !== 'object') {
+            //                 followerObj[el.trail_id] = new Array(response[j].follower_id);
+            //             } else {
+            //                 followerObj[el.trail_id].push(response[j].follower_id);
+            //             }
+            //         }
+            //     });
+            // };
+
+            // // Merge follower of trail and res in new Array
+            // let finalArray = [...res];
+            // finalArray.forEach(obj => {
+            //     for (let el in followerObj) {
+            //         if (obj.trail_id === el) {
+            //             obj.follower_id = followerObj[el];
+            //             obj.follower_count = followerObj[el].length;
+            //         } else {
+            //             if (!obj.follower_id && !obj.follower_count) {
+            //                 obj.follower_id = [];
+            //                 obj.follower_count = 0;
+            //             }
+            //         }
+            //     };
+            // });
+
+            // return {
+            //     result: finalArray,
+            //     statusCode: '200'
+            // };
 
         } catch (err) {
             console.log(err);
         }
     };
+     // Read trailit files
+     async readTrailitUserData(data) {
+        try {
+            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id left join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId")
+
+            return {
+                result: userData.rows,
+                statusCode: '200'
+            };
+
+           
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    
 
     // Update trailit file using trail data id and flag
     async updateTrailData(data) {
@@ -507,7 +530,7 @@ class BaseDao {
             // Check if trailit file exist
             const result = await this.checkForExistingTrailitData(data);
 
-            if (!result || result.length == 0) {    
+            if (!result || result.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();
             }
 
@@ -524,11 +547,11 @@ class BaseDao {
 
             // Updating trailit file using Knex
             const res = await db(this.table).where({ trail_data_id: data.trail_data_id }).update({ flag: data.flag }, ['*']);
-            
+
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotUpdated();
             }
-    
+
             // Return result
             return {
                 result: res[0],
@@ -539,19 +562,19 @@ class BaseDao {
             console.log(err);
         }
     };
-    
+
     // Update trailit file
     async updateTrailitData(data) {
-        try {    
+        try {
             // Check if trailit file exist
             const result = await this.checkForExistingTrailitData(data);
 
-            if (!result || result.length == 0) {    
+            if (!result || result.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();
             }
 
             let trail_id, title, description, type, mediaType, web_url, url, path, selector, uniqueTarget, dataClass, updated;
-            
+
             if (!data.updateValue.trail_id) {
                 trail_id = result[0].trail_id;
             } else {
@@ -626,11 +649,11 @@ class BaseDao {
 
             // Updating trailit file using Knex
             const res = await db(this.table).where({ trail_data_id: data.trail_data_id }).update({ trail_id: trail_id, title: title, description: description, type: type, media_type: mediaType, web_url: web_url, url: url, path: path, selector: selector, unique_target: uniqueTarget, class: dataClass, updated: updated }, ['*']);
-            
+
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotUpdated();
             }
-    
+
             // Return result
             return {
                 result: res[0],
@@ -644,16 +667,16 @@ class BaseDao {
 
     // Delete trailit file
     async deleteTrailitData(data) {
-        try {    
+        try {
             // Check if trailit file exist
             const res = await this.checkForExistingTrailitData(data);
-    
+
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();
             }
 
             // Deleting trailit data using Knex
-            const result = await db(this.table).where({ trail_data_id: res[0].trail_data_id }).delete();    
+            const result = await db(this.table).where({ trail_data_id: res[0].trail_data_id }).delete();
 
             if (!result || result == 0) {
                 return trailitDataMapper.trailitdataNotDeleted();

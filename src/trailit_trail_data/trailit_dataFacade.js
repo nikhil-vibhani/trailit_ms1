@@ -70,6 +70,16 @@ function getTrailits(data) {
         });
 };
 
+function getUserTrailits(data) {
+    return taskService.getonlyUserTrailits(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function updateTrail(data) {
     return taskService.trailUpdate(data)
         .then(result => {
@@ -110,5 +120,6 @@ module.exports = {
     getTrailits,
     updateTrail,
     updateTrailt,
-    deleteTrailit
+    deleteTrailit,
+    getUserTrailits
 };

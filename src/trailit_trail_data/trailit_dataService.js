@@ -69,6 +69,16 @@ function getAllTrailits(data) {
             console.log(err);
         });
 };
+function getonlyUserTrailits(data) {
+    return trailitDao.getUserTrailitsFromDb(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 
 function trailUpdate(data) {
     return trailitDao.updateTrailIntoDb(data)
@@ -110,5 +120,6 @@ module.exports = {
     getAllTrailits,
     trailUpdate,
     trailitUpdate,
-    trailitDelete
+    trailitDelete,
+    getonlyUserTrailits
 };

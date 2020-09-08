@@ -143,6 +143,22 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour/:user_id`, async (
         });
 });
 
+// Get all trails data of user by user_id
+trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_data_id`, async (ctx, next) => {
+    const trailitData = {
+        userId: ctx.params.user_id,
+        trail_data_id:ctx.params.trail_data_id
+    };
+
+    await taskFacade.getUserTrailits(trailitData)
+        .then(result => {
+            resHndlr.sendSuccess(ctx, result);
+        })
+        .catch(err => {
+            resHndlr.sendError(ctx, err);
+        });
+});
+
 // Update trails data by flag and trail_id
 trailitDataRoute.put(`${BASE_URL}updateTrail_trail_data_tour`, async (ctx, next) => {
     // Validate body
