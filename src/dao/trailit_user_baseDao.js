@@ -24,7 +24,7 @@ class BaseDao {
             // Get user's trail id
             const result = await db.select().from(this.userTable).where({ user_id: data.userId });
             
-            return result[0];
+            return result;
         } catch (err) {
             console.log(err);
         }
