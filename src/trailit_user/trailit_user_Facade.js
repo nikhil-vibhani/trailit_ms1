@@ -36,6 +36,14 @@ function getTrailId(data) {
 		})
 		.catch(err => console.log(err));
 };
+function getUserTourData(data) {
+	return trailUserService.getUserTourData(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 
 
 //========================== Export Module Start ==============================
@@ -43,7 +51,8 @@ function getTrailId(data) {
 module.exports = {
 	createNewTrail,
 	getAllTrails,
-	getTrailId
+	getTrailId,
+	getUserTourData
 };
 
 //========================== Export Module End ===============================

@@ -18,6 +18,18 @@ class BaseDao {
         }
     };
 
+    // Fetch user tour data
+    async getUserTourData(data) {
+        try {
+            // Get user's trail id
+            const result = await db.select().from(this.userTable).where({ user_id: data.userId });
+            
+            return result[0];
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // Create user trail
     async createUserTrail(data) {
         try {
