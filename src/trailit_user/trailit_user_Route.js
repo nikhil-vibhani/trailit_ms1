@@ -53,6 +53,24 @@ trailitUser.get(`${BASE_URL}indexTrail_id/:user_id`, async (ctx, next) => {
 	}
 });
 
+// get user tour data
+
+// Get trail_id of user
+trailitUser.get(`${BASE_URL}fetchusertourdata/:user_id`, async (ctx, next) => {
+
+	const data = {
+		userId: ctx.params.user_id
+	};
+
+	try {
+		const result = await trailUserFacade.getUserTourData(data);
+
+		resHndlr.sendSuccess(ctx, result);
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
+});
+
 // Get all user's trail
 trailitUser.get(`${BASE_URL}allTrails/:user_id`, async (ctx, next) => {
 
