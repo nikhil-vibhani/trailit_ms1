@@ -419,7 +419,7 @@ class BaseDao {
     // Read trailit files
     async readTrailitAllData(data) {
         try {
-            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id left join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' order by uts.trail_sortId")
+            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' order by uts.trail_sortId")
 
             return {
                 result: userData.rows,
@@ -509,7 +509,7 @@ class BaseDao {
      // Read trailit files
      async readTrailitUserData(data) {
         try {
-            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id left join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId")
+            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId")
 
             return {
                 result: userData.rows,
