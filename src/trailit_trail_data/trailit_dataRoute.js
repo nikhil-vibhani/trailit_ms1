@@ -183,12 +183,12 @@ trailitDataRoute.put(`${BASE_URL}updateTrail_trail_data_tour`, async (ctx, next)
 
 // Update trail data by id
 trailitDataRoute.put(`${BASE_URL}updateTrailit_trail_data_tour/:trail_data_id`, async (ctx, next) => {
-    // Validate body    
+    // Validate body
     const errors = await validators.updateTrailitDataValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors[0]);
     }
-
+    
     const updateData = {
         trail_data_id: ctx.params.trail_data_id,
         updateValue: ctx.request.body.updateValue,
@@ -209,7 +209,7 @@ trailitDataRoute.delete(`${BASE_URL}deleteTrailit_trail_data_tour/:trail_data_id
     const trailitData = {
         trail_data_id: ctx.params.trail_data_id
     };
-
+    
     await taskFacade.deleteTrailit(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);

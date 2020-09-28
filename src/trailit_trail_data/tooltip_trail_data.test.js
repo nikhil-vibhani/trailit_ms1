@@ -5,10 +5,10 @@ const expect = chai.expect;
 chai.use(chaiHttp);
 
 module.exports = function () {
+    
     let server, trailitdata, trail_data_id, trailDataUpdate, user_id = '5ec7a0d39238c4115d7145c4';
-
     // console.log(`======================== TOOLTIP trail data tests ========================`);
-
+    
     beforeEach(() => {
         server = 'http://localhost:3008';
 
@@ -41,7 +41,7 @@ module.exports = function () {
             updated: new Date().getTime()
         }
     });
-
+    
     // Test on create Trailit data api
     describe('/POST createTrailit_trail_data_tour', () => {
         
@@ -118,7 +118,6 @@ module.exports = function () {
     // Test on delete trail
     describe('/DELETE deleteTrailit_trail_data_tour/:trail_data_id', () => {
 
-        
         // Delete trailit detail
         it ('should delete trailiit detail by id', (done) => {            
 

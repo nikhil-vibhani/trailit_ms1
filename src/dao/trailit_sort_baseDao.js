@@ -5,11 +5,11 @@ class BaseDao {
     constructor(dbTable) {
         this.table = dbTable;
     };
-
+    
     // Sort perticular user's all trails
     async sortingTrails(data) {
         const user_id = data[0].userId;
-
+        
         // Add sort_id and trail_id in new array
         const updateArray = data.map((el, i) => {
             return {
@@ -21,7 +21,7 @@ class BaseDao {
         
         // // Update sort table using update array
         // const res = await db(this.table).where({ user_id}).update(updateArray, ['*']);
-
+        
         // if (!res || res.length === 0) {
         //     return trailitSortMapper.sortingFaild();
         // }
@@ -34,7 +34,7 @@ class BaseDao {
                     .update({ trail_sortid: el.trail_sortid })
                     .transacting(trx)
             });
-
+            
             Promise.all(queries)
                 .then(trx.commit)
                 .catch(trx.rollback);
