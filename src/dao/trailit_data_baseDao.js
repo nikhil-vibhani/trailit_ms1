@@ -24,8 +24,8 @@ class BaseDao {
         this.sortTable = sortTable;
         this.userTable = userTable;
         this.followTable = followTable;
-        this.notfiTable = notificationTable
-
+        this.notfiTable = notificationTable;
+    
         userDbTable = userTable;
         followDbTable = followTable;
         notifiDbTable = notificationTable;
@@ -38,13 +38,13 @@ class BaseDao {
             if (data.trail_id) {
                 // Checking existing trailit data using KNEX
                 result = await db.select().from(this.table).where({ trail_id: data.trail_id });
-
             } else if (data.trail_data_id) {
                 // Checking existing trailit data using KNEX
                 result = await db.select().from(this.table).where({ trail_data_id: data.trail_data_id });
             }
 
             return result;
+
         } catch (err) {
             console.log(err);
         }
@@ -131,7 +131,7 @@ class BaseDao {
 
             // Insert trail_id into USER_TOUR_SORT
             const response = await db(this.sortTable).insert(sortArray, ['*']);
-
+            
             if (!response || response.length == 0) {
                 return trailitDataMapper.trailitNotAddedToSort();
             }
@@ -145,7 +145,7 @@ class BaseDao {
             console.log(err);
         }
     };
-
+    
     // Socket connection
     socket(socket, io) {
         socketIo = socket;
@@ -271,7 +271,7 @@ class BaseDao {
             console.log('Socket is disconnected');
         });
     };
-
+    
     async getFollowers() {
         try {
             // Get all trails of user
@@ -510,19 +510,16 @@ class BaseDao {
      async readTrailitUserData(data) {
         try {
             const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId")
-
+            
             return {
                 result: userData.rows,
                 statusCode: '200'
             };
 
-           
         } catch (err) {
             console.log(err);
         }
     };
-
-    
 
     // Update trailit file using trail data id and flag
     async updateTrailData(data) {
@@ -557,7 +554,7 @@ class BaseDao {
                 result: res[0],
                 statusCode: '200'
             };
-
+            
         } catch (err) {
             console.log(err);
         }
@@ -572,7 +569,7 @@ class BaseDao {
             if (!result || result.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();
             }
-
+            
             let trail_id, title, description, type, mediaType, web_url, url, path, selector, uniqueTarget, dataClass, updated;
 
             if (!data.updateValue.trail_id) {
@@ -604,13 +601,13 @@ class BaseDao {
             } else {
                 mediaType = data.updateValue.mediaType;
             }
-
+            
             if (!data.updateValue.web_url) {
                 web_url = result[0].web_url;
             } else {
                 web_url = data.updateValue.web_url;
             }
-
+            
             if (!data.updateValue.url) {
                 url = result[0].url;
             } else {

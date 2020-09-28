@@ -2,8 +2,9 @@ const { db } = require('../config');
 const trailitNotifiMapper = require('../trailit_trail_notification/trailit_notifi_Mapper');
 
 class BaseDao {
-    constructor(notifiTable) {
+    constructor(notifiTable, userTourTable) {
         this.notifiTable = notifiTable;
+        this.userTourTable = userTourTable;
     };
 
     /*
@@ -46,19 +47,21 @@ class BaseDao {
     // Read all trailit_notifications
     async readTrailit_notifications(data) {
         try {
+            // dfdfdfdfdfdfdf
             // Get all trailit notification usign Knex
             const res = await db.select().from(this.notifiTable).where({ user_id: data.user_id, flag: data.flag });
+            const userData = await db.raw(`SELECT * FROM user_tour_trail_notification AS uttn INNER JOIN user_tour AS ut ON uttn.user_id = ut.user_id AND uttn.flag='${data.flag}' AND uttn.user_id='${data.user_id}'`)
 
             if (!res || res.length == 0) {
                 return trailitNotifiMapper.trailitNotifiNotExist();
             }
-
+            
             // return results
             return {
                 result: res,
                 statusCode: '200'
             };
-
+            
         } catch (err) {
             console.log(err);
         }

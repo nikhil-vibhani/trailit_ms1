@@ -51,7 +51,8 @@ let db = require('knex')({
         database: cfg.pg.dbName
     },
 });
-
+const { attachPaginate } = require('knex-paginate');
+attachPaginate();
 //Export config module
 module.exports = {
     cfg,

@@ -57,18 +57,19 @@ trailit_detail_Router.get(`${BASE_URL}readTrailits_detail_tour`, async (ctx, nex
 });
 
 trailit_detail_Router.put(`${BASE_URL}updateTrailit_detail_tour/:trail_detail_id`, async (ctx, next) => {
+    
     // Validate body
     const errors = await validators.updateTrailitValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors[0]);
     }
-
+    
     const updateData = {
         trail_detail_id: ctx.params.trail_detail_id,
         updateValue: ctx.request.body.updateValue,
         updated: ctx.request.body.updated
     };
-
+    
     await trailit_detail_Facade.updateTrailt(updateData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);

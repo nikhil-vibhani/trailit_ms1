@@ -76,6 +76,7 @@ function getTrailitsFromDb(data) {
             console.log(err);
         });
 };
+
 function getUserTrailitsFromDb(data) {
     return trailitFileDao.readTrailitUserData(data)
         .then(result => {
@@ -85,7 +86,6 @@ function getUserTrailitsFromDb(data) {
             console.log(err);
         });
 };
-
 
 function updateTrailIntoDb(data) {
     return trailitFileDao.updateTrailData(data)

@@ -30,7 +30,7 @@ function trailitDetailNotUpdated() {
         "result": "Trailit Detail not updated",
         "statusCode": 404
     };
-
+    console.log("resObj", resObj);
     return resObj;
 };
 

@@ -9,7 +9,7 @@ class BaseDao {
     /*
        ===========================  TRAILIT  ===========================
     */
-
+    
     // Disconnect database
     disconnectDatabase() {
         return db.destroy()
@@ -35,7 +35,7 @@ class BaseDao {
 
                 return trailitMapper.trailNotCreated();
             }
-
+            
             // // Disconnect database
             // await this.disconnectDatabase();
 

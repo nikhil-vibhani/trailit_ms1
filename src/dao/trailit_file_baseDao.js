@@ -83,7 +83,7 @@ class BaseDao {
 
             // Insert trail_id into sorting table
             const response = await db(this.sortTable).insert({ trail_id: res[0].trail_file_id }, ['*']);
-
+            
             if (!response || response.length == 0) {
                 return trailitFileMapper.trailitNotAddedToSort();
             }
@@ -107,7 +107,7 @@ class BaseDao {
         try {
             // Post profile image into cloud
             const res = await cloud.createObjectInBucket(data.file);
-
+            
             return {
                 result: res,
                 statusCode: '200'
@@ -123,7 +123,7 @@ class BaseDao {
         try {
             // Post media file in cloud
             const res = await cloud.createObjectInBucket(data.file);
-
+            
             return {
                 result: res,
                 statusCode: '200'
@@ -218,7 +218,7 @@ class BaseDao {
     
                 return trailitFileMapper.trailitFileNotExist();
             }
-
+            
             let trail_id, title, description, file_type, web_url, element_content, updated;
             if (!data.updateValue.trail_id) {
                 trail_id = result[0].trail_id;
@@ -255,7 +255,7 @@ class BaseDao {
             } else {
                 element_content = data.updateValue.element_content;
             }
-
+            
             if (!data.updated) {
                 updated = result[0].updated;
             } else {
@@ -264,13 +264,12 @@ class BaseDao {
 
             // // Update query
             // const query = `UPDATE ${this.table} SET trail_id = '${trail_id}', title = '${title}', description = '${description}', file_type = '${file_type}', web_url = '${web_url}', element_content = '${element_content}', updated = '${updated}' WHERE trail_file_id = '${data.trail_file_id}' RETURNING *`;
-    
+            
             // // Update trailit file
             // const res = await client.query(query);
 
             // Updating trailit file using Knex
             const res = await db(this.table).where({ trail_file_id: data.trail_file_id }).update({ trail_id: trail_id, title: title, description: description, file_type: file_type, web_url: web_url, element_content: element_content, updated: updated }, ['*']);
-            
             // // Disconnect database
             // await this.disconnectDatabase();
 
@@ -308,7 +307,7 @@ class BaseDao {
 
             // Deleting trailit file using Knex
             const result = await db(this.table).where({ trail_file_id: res[0].trail_file_id }).delete();    
-
+            
             // // Disconnect database
             // await this.disconnectDatabase();
 
