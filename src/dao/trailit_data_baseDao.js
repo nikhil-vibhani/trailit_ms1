@@ -207,7 +207,7 @@ class BaseDao {
                     res.followersList.forEach(el => {
                         followerMap.set(el.follower_id, el);
                     });
-
+                    
                     // Adding trail_id and followed_id in ids array
                     followerMap.forEach((value, key) => {
                         for (let i = 0; i < res.allTrails.length; i++) {
@@ -715,6 +715,5 @@ class BaseDao {
         }
     };
 }
-
 
 module.exports = BaseDao;

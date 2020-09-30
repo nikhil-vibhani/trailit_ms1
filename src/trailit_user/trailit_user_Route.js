@@ -8,10 +8,10 @@ const BASE_URL = `/trailit/api/v1/trailitUser/`;
 
 // Post user's new trail
 trailitUser.post(`${BASE_URL}createTrail_trail_user_tour`, async (ctx, next) => {
-
+	
 	// Data validation
 	const errors = validation.createUserTrailValidation(ctx);
-
+	
 	if (errors && errors.errors.length > 0) {
 		return resHndlr.sendError(ctx, errors.errors);
 	}
@@ -21,10 +21,9 @@ trailitUser.post(`${BASE_URL}createTrail_trail_user_tour`, async (ctx, next) => 
 		trailName: ctx.request.body.trail_name,
 		trail_description: ctx.request.body.trail_description,
 		trail_categor_id: ctx.request.body.trail_category_id,
-		trail_user_status: ctx.request.body.trail_status,
+		trail_user_status: ctx.request.body.trail_user_status,
 		cover_image_url: ctx.request.body.cover_image_url
 	};
-
 	try {
 		const result = await trailUserFacade.createNewTrail(data);
 
@@ -97,7 +96,7 @@ trailitUser.get(`${BASE_URL}fetchusertourdata/:user_id`, async (ctx, next) => {
 
 	try {
 		const result = await trailUserFacade.getUserTourData(data);
-
+		
 		resHndlr.sendSuccess(ctx, result);
 	} catch (err) {
 		resHndlr.sendError(ctx, err);
@@ -106,7 +105,7 @@ trailitUser.get(`${BASE_URL}fetchusertourdata/:user_id`, async (ctx, next) => {
 
 // Get all user's trail
 trailitUser.get(`${BASE_URL}allTrails/:user_id`, async (ctx, next) => {
-
+	
 	// Data validation
 	const errors = validation.validation(ctx);
 
@@ -120,6 +119,16 @@ trailitUser.get(`${BASE_URL}allTrails/:user_id`, async (ctx, next) => {
 
 	try {		
 		const result = await trailUserFacade.getAllTrails(data);
+		resHndlr.sendSuccess(ctx, result);	
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
+});
+
+// Get all user's trail
+trailitUser.get(`${BASE_URL}getAllCategory`, async (ctx, next) => {
+	try {
+		const result = await trailUserFacade.getAllCategory();
 		resHndlr.sendSuccess(ctx, result);	
 	} catch (err) {
 		resHndlr.sendError(ctx, err);

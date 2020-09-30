@@ -1,5 +1,6 @@
 const { db } = require('../config');
 const trailUserMapper = require('../trailit_user/trailit_user_Mapper');
+const _ = require('lodash');
 
 class BaseDao {
     constructor(user_table,
@@ -7,8 +8,9 @@ class BaseDao {
         trail_user_comment_like_table, 
         user_tour_sort_table, 
         user_tour_trail_data_table, 
-        user_tour_trail_follow_table, 
-        user_tour_trail_notification_table) {
+        user_tour_trail_follow_table,
+        user_tour_trail_notification_table,
+        categoryTable) {
 
         this.userTable = user_table;
         this.trailUserActionTable = trail_user_action_table;
@@ -17,6 +19,7 @@ class BaseDao {
         this.userTourTrailDataTable = user_tour_trail_data_table;
         this.userTourTrailFollowTable = user_tour_trail_follow_table;
         this.userTourTrailNotificationTable = user_tour_trail_notification_table;
+        this.categoryTable = categoryTable;
     };
 
     // Check for user's trail id
@@ -25,6 +28,17 @@ class BaseDao {
             // Get user's trail id
             const result = await db.select().from(this.userTable).where({ user_id: data.userId });
             return result[0];
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // Check uniq trail name
+    async checkUniqTraiName(trailTitle) {
+        try {
+            // Get user's trail id
+            const result = await db.select().from(this.userTable).where({ trail_name: trailTitle });
+            return result
         } catch (err) {
             console.log(err);
         }
@@ -42,18 +56,44 @@ class BaseDao {
         }
     };
     
-    // Create user trail
-    async createUserTrail(data) {
+    // Get All Category
+    async getAllCategory() {
         try {
-            // Insert into USER_TOUR table 
-            const res = await db(this.userTable).insert({ user_id: data.userId, trail_name: data.trailName }, ['*']);
+            const result = await db.select().from(this.categoryTable);
             
-            return res;
+            return result;
         } catch (err) {
             console.log(err);
         }
     };
     
+    // Create user trail
+    async createUserTrail(data) {
+        try {
+            let checkTrail = await this.checkUniqTraiName(data.trailName);
+
+            if(!_.isEmpty(checkTrail)) {
+                return trailUserMapper.trailitExist();
+            }
+            
+            let obj = {
+                user_id: data.userId,
+                trail_name: data.trailName,
+                trail_description: data.trail_description,
+                trail_categor_id: data.trail_categor_id,
+                trail_user_status: data.trail_user_status,
+                cover_image_url: data.cover_image_url
+            }
+            
+            // Insert into USER_TOUR table 
+            const res = await db(this.userTable).insert(obj, ['*']);
+
+            return res; 
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // Update user trail
     async updateTrail(data) {
         try {
