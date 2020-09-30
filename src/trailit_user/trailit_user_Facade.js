@@ -52,6 +52,13 @@ function getUserTourData(data) {
 		})
 		.catch(err => console.log(err));
 };
+function getAllCategory() {
+	return trailUserService.getAllCategory()
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
 function deleteUserTrail(data) {
 	return trailUserService.deleteUserTrail(data)
 		.then(result => {
@@ -69,6 +76,7 @@ module.exports = {
 	getAllTrails,
 	getTrailId,
 	getUserTourData,
+	getAllCategory,
 	deleteUserTrail
 };
 

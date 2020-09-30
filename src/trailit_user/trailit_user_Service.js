@@ -47,6 +47,14 @@ function getUserTourData(data) {
 		.catch(err => console.log(err));
 };
 
+function getAllCategory() {
+	return trailUserDao.getAllCategory()
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 function deleteUserTrail(data) {
 	return trailUserDao.deleteUserTrail(data)
 		.then(result => {
@@ -62,6 +70,7 @@ module.exports = {
 	getAllUserTrail,
 	getUserTrailId,
 	getUserTourData,
+	getAllCategory,
 	deleteUserTrail
 };
 

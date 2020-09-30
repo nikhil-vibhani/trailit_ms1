@@ -18,7 +18,7 @@ class BaseDao {
             })
             .catch(err => console.log(err)); 
     };
-
+    
     // Create new Trailit
     async createNewTrailit(data) {
         try {
