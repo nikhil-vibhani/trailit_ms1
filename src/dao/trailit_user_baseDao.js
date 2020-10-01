@@ -22,6 +22,7 @@ class BaseDao {
         this.categoryTable = categoryTable;
     };
 
+    
     // Check for user's trail id
     async indexTrailId(data) {
         try {
@@ -34,10 +35,17 @@ class BaseDao {
     };
 
     // Check uniq trail name
-    async checkUniqTraiName(trailTitle) {
+    async checkUniqTraiName(trailTitle, trail_id) {
         try {
             // Get user's trail id
-            const result = await db.select().from(this.userTable).where({ trail_name: trailTitle });
+            if(trail_id===undefined) {
+                condition = ` trail_name='${trailTitle}'`;
+            } else {
+                condition = ` trail_name='${trailTitle}' AND trail_id=${trail_id}`;
+            }
+
+            const result = await db.raw(`SELECT * FROM ${this.userTable} WHERE ${condition}`);
+            
             return result
         } catch (err) {
             console.log(err);
@@ -84,7 +92,7 @@ class BaseDao {
                 trail_user_status: data.trail_user_status,
                 cover_image_url: data.cover_image_url
             }
-            
+
             // Insert into USER_TOUR table 
             const res = await db(this.userTable).insert(obj, ['*']);
 
@@ -97,6 +105,13 @@ class BaseDao {
     // Update user trail
     async updateTrail(data) {
         try {
+
+            let checkTrail = await this.checkUniqTraiName(data.trail_name, data.trail_id);
+            
+            if(!_.isEmpty(checkTrail)) {
+                return trailUserMapper.trailitExist();
+            }
+            
             const objData = {
                 userId: data.user_id,
                 trail_name: data.trail_name,
