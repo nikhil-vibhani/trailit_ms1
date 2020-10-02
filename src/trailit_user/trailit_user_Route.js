@@ -35,23 +35,23 @@ trailitUser.post(`${BASE_URL}createTrail_trail_user_tour`, async (ctx, next) => 
 
 // Post user's new trail
 trailitUser.put(`${BASE_URL}updateTrail_trail_user_tour/:trail_id`, async (ctx, next) => {
-
+	
 	// Data validation
 	const errors = validation.updateUserTrailValidation(ctx);
 
 	if (errors && errors.errors.length > 0) {
 		return resHndlr.sendError(ctx, errors.errors);
 	}
-
+	
 	const data = {
-		trail_id: ctx.params.trail_id, 
-		userId: ctx.request.body.user_id,
-		trailName: ctx.request.body.trail_name,
+		trail_id: ctx.params.trail_id,
+		trailName: ctx.request.body.trail_title,
 		trail_description: ctx.request.body.trail_description,
-		trail_categor_id: ctx.request.body.trail_category_id,
-		trail_user_status: ctx.request.body.trail_status,
+		trail_categor_id: ctx.request.body.trail_categor_id==null?1:parseInt(ctx.request.body.trail_categor_id),
+		trail_user_status: ctx.request.body.trail_user_status,
 		cover_image_url: ctx.request.body.cover_image_url
 	};
+	
 
 	try {
 		const result = await trailUserFacade.updateTrail(data);
