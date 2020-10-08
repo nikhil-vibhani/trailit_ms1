@@ -81,7 +81,7 @@ trailit_detail_Router.put(`${BASE_URL}updateTrailit_detail_tour/:trail_detail_id
 
 trailit_detail_Router.delete(`${BASE_URL}deleteTrailit_detail_tour/:trail_detail_id`, async (ctx, next) => {
     const data = {
-        trail_detail_id: ctx.params.trail_detail_id
+        trail_detail_id: ctx.param.trail_detail_id
     };
 
     await trailit_detail_Facade.deleteTrailit(data)
