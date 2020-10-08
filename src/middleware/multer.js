@@ -1,5 +1,5 @@
 /**
- * @author kunal saxena
+ * @author Nikhil Vibhani
  */
 
 // Use multer for express
@@ -32,6 +32,7 @@ let path, upload;
 //===================================== Exports ===========================================================
 
 module.exports = {
+	noneFile: _noneFile,
 	single: _singleFile,
 	array: _fileArray,
 	fields: _randomFiles,
@@ -42,6 +43,10 @@ module.exports = {
 
 function _singleFile(key) {
 	return upload.single(key);
+}
+
+function _noneFile() {
+	return upload.none();
 }
 
 function _fileArray(key, count) {
