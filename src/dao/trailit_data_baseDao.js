@@ -300,12 +300,12 @@ class BaseDao {
         try {
             // Post profile image into cloud
             const res = await cloud.createObjectInBucket(data.file);
-
+            
             return {
                 result: res,
                 statusCode: '200'
             };
-
+            
         } catch (err) {
             console.log(err);
         }
@@ -506,8 +506,9 @@ class BaseDao {
             console.log(err);
         }
     };
-     // Read trailit files
-     async readTrailitUserData(data) {
+    
+    // Read trailit files
+    async readTrailitUserData(data) {
         try {
             const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId")
             
@@ -548,7 +549,7 @@ class BaseDao {
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotUpdated();
             }
-
+            
             // Return result
             return {
                 result: res[0],
@@ -559,7 +560,7 @@ class BaseDao {
             console.log(err);
         }
     };
-
+    
     // Update trailit file
     async updateTrailitData(data) {
         try {
@@ -583,7 +584,7 @@ class BaseDao {
             } else {
                 title = data.updateValue.title;
             }
-
+            
             if (!data.updateValue.description) {
                 description = result[0].description;
             } else {
@@ -595,7 +596,7 @@ class BaseDao {
             } else {
                 type = data.updateValue.type;
             }
-
+            
             if (!data.updateValue.mediaType) {
                 mediaType = result[0].mediaType;
             } else {
@@ -619,7 +620,7 @@ class BaseDao {
             } else {
                 path = data.updateValue.path;
             }
-
+            
             if (!data.updateValue.selector) {
                 selector = result[0].selector;
             } else {

@@ -2,11 +2,10 @@ const Router = require('koa-router');
 const resHndlr = require('../responseHandler');
 const validators = require('./trailit_dataValidation');
 const taskFacade = require('./trailit_dataFacade');
-const { single } = require('../middleware/multer');
-
+const { noneFile, single } = require('../middleware/multer');
 const trailitDataRoute = new Router();
 const BASE_URL  = `/trailit/api/v1/userTourDataDetail/`;
-
+const querystring = require('querystring');
 // Creating new trail data
 trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, next) => {
     // Validate body    
@@ -44,12 +43,18 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
         });
 });
 
+// Creating new trail data
+trailitDataRoute.post(`${BASE_URL}sortTrailOrder`, async (ctx, next) => {
+    const data = await ctx.request.body;
+    console.log("data", data);
+});
+
 // Upload profile image 
 trailitDataRoute.post(`${BASE_URL}uploadTrail_profile_image`, single('profile_image'), async (ctx, next) => {
     const fileData = {
         file: ctx.request.file
     }
-
+    
     await taskFacade.uploadProfileImage(fileData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
@@ -149,7 +154,7 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_d
         userId: ctx.params.user_id,
         trail_data_id:ctx.params.trail_data_id
     };
-
+    
     await taskFacade.getUserTrailits(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);

@@ -14,7 +14,6 @@ const responseHandler = require('../responseHandler');
 
 
 module.exports = function (app) {
-
     // Attach User Routes
     app.use(userTour.routes());
 
