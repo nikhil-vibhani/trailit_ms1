@@ -99,10 +99,10 @@ class BaseDao {
                 return trailitDataMapper.trailitDataNotCreated();
             }
             
-            let resultAr = await db.raw(`SELECT * FROM ${this.table} AS uttd INNER JOIN ${this.sortTable} AS uts ON uts.trail_id = uttd.trail_id WHERE uttd.responsive='${dataRes[0].responsive}' AND uttd.trail_id::int=${dataRes[0].trail_id} ORDER BY uts.trail_sortid`);
+            let resultAr = await db.raw(`SELECT uts.trail_data_id, uts.trail_sortid FROM (SELECT * FROM ${this.table} WHERE trail_id::int=${dataRes[0].trail_id} AND responsive='${dataRes[0].responsive}') AS uttd INNER JOIN ${this.sortTable} AS uts ON uttd.trail_data_id::varchar = uts.trail_data_id ORDER BY uts.trail_sortid DESC`);
             
             let obj = {};
-
+            
             if(resultAr.rowCount == 0) {
                 obj = {
                     trail_id: dataRes[0].trail_id,
@@ -115,7 +115,7 @@ class BaseDao {
                     trail_id: dataRes[0].trail_id,
                     user_id: data.userId,
                     trail_data_id: dataRes[0].trail_data_id,
-                    trail_sortid: parseInt(dataRes[0].trail_sortid) + 1
+                    trail_sortid: parseInt(resultAr.rows[0].trail_sortid) + 1
                 }
             }
             
