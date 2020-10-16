@@ -35,7 +35,6 @@ class BaseDao {
             });
             
             Promise.all(queries)
-        
             .then(trx.commit)
                 .catch(trx.rollback);
         });

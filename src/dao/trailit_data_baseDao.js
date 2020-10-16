@@ -1,5 +1,6 @@
 "use strict";
 
+const { exitOnError } = require('winston');
 //========================== Import module start =======================
 
 const { db } = require('../config');
@@ -50,92 +51,81 @@ class BaseDao {
         }
     };
 
+    // Check uniq trail name
+    async checkUniqTraiName(trailTitle, responsive, trail_id) {
+        try {
+            let condition = "";
+            condition = ` title='${trailTitle}' AND responsive='${responsive}' AND trail_id::int=${trail_id}`;
+            const result = await db.raw(`SELECT * FROM ${this.table} WHERE ${condition}`);
+            return result.rowCount;
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // Insert new Trailit data task
     async insertTrailitData(data) {
+        
         try {
-            // // Create new array for user_tour table table and get userId and title
-            // const userDataArray = data.map(obj => {
-            //     return {
-            //         user_id: obj.user_id,
-            //         trail_name: obj.title
-            //     };  
-            // });       
-
-            // // Insert into USER_TOUR table 
-            // const res = await db(this.userTable).insert(userDataArray, ['*']);
-
-            // if (!res || res.length == 0) {
-            //     return trailitDataMapper.trailitNotCreated();
-            // }
-
-            // // Create new array for user_tour_trail_data table and remove userId and trailIndex from data array
-            // const dataArray = data.map((obj, i) => {
-            //     for (let j = 0; j <res.length; j++) {
-            //         if (i === j) {
-            //             return {
-            //                 trail_id: res[j].trail_id,
-            //                 title: obj.title,
-            //                 description: obj.description,
-            //                 web_url: obj.web_url,
-            //                 url: obj.url,
-            //                 type: obj.type,
-            //                 media_type: obj.media_type,
-            //                 path: obj.path,
-            //                 selector: obj.selector,
-            //                 class: obj.class,
-            //                 unique_target: obj.unique_target,
-            //                 created: obj.created
-            //             };
-            //         }
-            //     }
-            // });
-
+            
+            let check = await this.checkUniqTraiName(data.title, data.responsive, data.trail_id);
+            
+            if(check > 0) {
+                return trailitDataMapper.trailitExist();
+            }
+            
             // Modified array
-            const dataArray = data.map(obj => {
-                return {
-                    trail_id: obj.trail_id,
-                    title: obj.title,
-                    description: obj.description,
-                    web_url: obj.web_url,
-                    url: obj.url,
-                    type: obj.type,
-                    media_type: obj.media_type,
-                    path: obj.path,
-                    selector: obj.selector,
-                    class: obj.class,
-                    unique_target: obj.unique_target,
-                    created: obj.created
-                };
-            });
+            const dataArray = {
+                trail_id: data.trail_id,
+                title: data.title,
+                description: data.description,
+                web_url: data.web_url==undefined?'':data.web_url,
+                url: data.url,
+                type: data.type,
+                media_type: data.mediaType,
+                path: data.path,
+                selector: data.selector,
+                responsive: data.responsive,
+                class: '',
+                unique_target: data.uniqueTarget,
+                created: data.created
+            };
 
+                
             // Inserting data into USER_TOUR_TRAIL_DATA
             let dataRes = await db(this.table).insert(dataArray, ['*']);
-
+            
             if (!dataRes || dataRes.length == 0) {
                 return trailitDataMapper.trailitDataNotCreated();
             }
-
-            // Create array for user_tour_sort table and get trail_id 
-            const sortArray = dataRes.map((el, j) => {
-                for (let i = 0; i < data.length; i++) {
-                    if (el.created == data[i].created) {
-                        return {
-                            trail_id: el.trail_id,
-                            user_id: data[i].user_id,
-                            trail_data_id: el.trail_data_id,
-                            trail_sortid: data[i].trailIndex
-                        };
-                    }
+            
+            let resultAr = await db.raw(`SELECT uts.trail_data_id, uts.trail_sortid FROM (SELECT * FROM ${this.table} WHERE trail_id::int=${dataRes[0].trail_id} AND responsive='${dataRes[0].responsive}') AS uttd INNER JOIN ${this.sortTable} AS uts ON uttd.trail_data_id::varchar = uts.trail_data_id ORDER BY uts.trail_sortid DESC`);
+            
+            let obj = {};
+            
+            if(resultAr.rowCount == 0) {
+                obj = {
+                    trail_id: dataRes[0].trail_id,
+                    user_id: data.userId,
+                    trail_data_id: dataRes[0].trail_data_id,
+                    trail_sortid: 1
                 }
-            });
-
+            } else {
+                obj = {
+                    trail_id: dataRes[0].trail_id,
+                    user_id: data.userId,
+                    trail_data_id: dataRes[0].trail_data_id,
+                    trail_sortid: parseInt(resultAr.rows[0].trail_sortid) + 1
+                }
+            }
+            
             // Insert trail_id into USER_TOUR_SORT
-            const response = await db(this.sortTable).insert(sortArray, ['*']);
+            const response = await db(this.sortTable).insert(obj, ['*']);
             
             if (!response || response.length == 0) {
                 return trailitDataMapper.trailitNotAddedToSort();
             }
-
+            
             return {
                 result: dataRes,
                 statusCode: '201'
@@ -510,13 +500,13 @@ class BaseDao {
     // Read trailit files
     async readTrailitUserData(data) {
         try {
-            const userData = await db.raw("select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id ='" + data.userId + "' and ut.trail_id = '" + data.trail_data_id + "' order by uts.trail_sortId");
+            const userData = await db.raw(`select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.responsive,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id = '${data.userId}' and ut.trail_id = ${data.trail_data_id} AND uttd.responsive='${data.screen}'  order by uts.trail_sortId`);
             
             return {
                 result: userData.rows,
                 statusCode: '200'
             };
-
+        
         } catch (err) {
             console.log(err);
         }
