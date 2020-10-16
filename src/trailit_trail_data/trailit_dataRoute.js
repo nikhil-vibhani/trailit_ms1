@@ -9,32 +9,15 @@ const querystring = require('querystring');
 // Creating new trail data
 trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, next) => {
     // Validate body    
+    
     const errors = await validators.createTrailitDataValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
 
     const data = ctx.request.body;
-    const trailitData = data.map(el => {
-        return {
-            user_id: el.userId,
-            trail_id: el.trail_id,
-            title: el.title,
-            description: el.description,
-            type: el.type,
-            media_type: el.mediaType,
-            web_url: el.web_url,
-            url: el.url,
-            path: el.path,
-            selector: el.selector,
-            unique_target: el.uniqueTarget,
-            class: el.class,
-            created: el.created,
-            trailIndex: el.trailIndex
-        };
-    });
-
-    await taskFacade.createSingleTrailit(trailitData)
+    
+    await taskFacade.createSingleTrailit(data)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
         })
@@ -149,10 +132,11 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour/:user_id`, async (
 });
 
 // Get all trails data of user by user_id
-trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_data_id`, async (ctx, next) => {
+trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_data_id/:screen`, async (ctx, next) => {
     const trailitData = {
         userId: ctx.params.user_id,
-        trail_data_id:ctx.params.trail_data_id
+        trail_data_id:ctx.params.trail_data_id,
+        screen: ctx.params.screen
     };
     
     await taskFacade.getUserTrailits(trailitData)
