@@ -68,11 +68,11 @@ class BaseDao {
         
         try {
             
-            let check = await this.checkUniqTraiName(data.title, data.responsive, data.trail_id);
+            // let check = await this.checkUniqTraiName(data.title, data.responsive, data.trail_id);
             
-            if(check > 0) {
-                return trailitDataMapper.trailitExist();
-            }
+            // if(check > 0) {
+            //     return trailitDataMapper.trailitExist();
+            // }
             
             // Modified array
             const dataArray = {
@@ -88,6 +88,7 @@ class BaseDao {
                 responsive: data.responsive,
                 class: '',
                 unique_target: data.uniqueTarget,
+                unique_target_one: data.uniqueTarget_one?data.uniqueTarget_one:'',
                 created: data.created
             };
 
@@ -99,7 +100,7 @@ class BaseDao {
                 return trailitDataMapper.trailitDataNotCreated();
             }
             
-            let resultAr = await db.raw(`SELECT uts.trail_data_id, uts.trail_sortid FROM (SELECT * FROM ${this.table} WHERE trail_id::int=${dataRes[0].trail_id} AND responsive='${dataRes[0].responsive}') AS uttd INNER JOIN ${this.sortTable} AS uts ON uttd.trail_data_id::varchar = uts.trail_data_id ORDER BY uts.trail_sortid DESC`);
+            let resultAr = await db.raw(`SELECT uts.trail_data_id, uts.trail_sortid FROM (SELECT * FROM ${this.table} WHERE trail_id::int=${dataRes[0].trail_id}) AS uttd INNER JOIN ${this.sortTable} AS uts ON uttd.trail_data_id::varchar = uts.trail_data_id ORDER BY uts.trail_sortid DESC`);
             
             let obj = {};
             
@@ -500,7 +501,7 @@ class BaseDao {
     // Read trailit files
     async readTrailitUserData(data) {
         try {
-            const userData = await db.raw(`select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.responsive,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id = '${data.userId}' and ut.trail_id = ${data.trail_data_id} AND uttd.responsive='${data.screen}'  order by uts.trail_sortId`);
+            const userData = await db.raw(`select uttd.trail_data_id,ut.trail_id,uttd.title,uttd.responsive,uttd.description,uttd.web_url,uttd.url,uttd.path,uttd.selector,uttd.unique_target,uttd.class,uttd.type,uttd.media_type,uttd.created,uttd.updated,uttd.flag, uts.trail_sortid  from user_tour as ut left join user_tour_sort as uts on uts.user_id = ut.user_id join user_tour_trail_data as uttd on uttd.trail_id::int = ut.trail_id and uttd.trail_data_id = uts.trail_data_id::int left join user_tour_trail_follow as uttf on uttf.followed_id = uttd.trail_id where ut.user_id = '${data.userId}' and ut.trail_id = ${data.trail_data_id} order by uts.trail_sortId`);
             
             return {
                 result: userData.rows,
