@@ -62,6 +62,20 @@ trailitUser.put(`${BASE_URL}updateTrail_trail_user_tour/:trail_id`, async (ctx, 
 	}
 });
 
+
+// Post trail update data
+trailitUser.post(`${BASE_URL}UpdateTrailData`, async (ctx, next) => {
+	
+	const data = ctx.request.body;
+	
+	try {
+		const result = await trailUserFacade.UpdateTrailData(data);
+		resHndlr.sendSuccess(ctx, result);
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
+});
+
 // Get trail_id of user
 trailitUser.get(`${BASE_URL}indexTrail_id/:user_id`, async (ctx, next) => {
 	

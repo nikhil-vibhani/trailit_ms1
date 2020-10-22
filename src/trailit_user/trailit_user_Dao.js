@@ -18,6 +18,14 @@ function updateTrail(data) {
         .catch(err => console.log(err));
 };
 
+function UpdateTrailData(data) {
+    return trailUserDao.UpdateTrailData(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => console.log(err));
+};
+
 function getAllTrail(data) {
     return trailUserDao.getAllTrails(data)
         .then(result => {
@@ -68,5 +76,6 @@ module.exports = {
     getTrailId,
     getUserTourData,
     getAllCategory,
-    deleteUserTrail
+    deleteUserTrail,
+    UpdateTrailData
 };
