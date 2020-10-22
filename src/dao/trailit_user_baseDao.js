@@ -34,7 +34,7 @@ class BaseDao {
             console.log(err);
         }
     };
-
+    
     // Check uniq trail name
     async checkUniqTraiName(trailTitle, trail_id) {
         try {
@@ -124,6 +124,26 @@ class BaseDao {
 
             // Update USER_TOUR table 
             const res = await db(this.userTable).where({ trail_id: data.trail_id }).update(objData, ['*']);
+            
+            return res;
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // Update user trail
+    async UpdateTrailData(data) {
+        try {
+            
+            let objData = {
+                title: data.title,
+                description: data.description,
+                media_type: data.mediaType,
+                unique_target_one: data.unique_target_one
+            };
+            
+            // Update USER_TOUR table 
+            const res = await db(this.userTourTrailDataTable).where({ trail_data_id: data.trail_data_id }).update(objData, ['*']);
             
             return res;
         } catch (err) {

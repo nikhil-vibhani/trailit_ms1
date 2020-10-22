@@ -30,6 +30,14 @@ function updateTrail(data) {
 	.catch(err => console.log(err));
 }
 
+function UpdateTrailData(data) {
+	return trailUserService.UpdateTrailData(data)
+	.then(result => {
+		return result;		
+	})
+	.catch(err => console.log(err));
+}
+
 function getAllTrails(data) {
 	return trailUserService.getAllUserTrail(data)
 		.then(result => {
@@ -77,7 +85,8 @@ module.exports = {
 	getTrailId,
 	getUserTourData,
 	getAllCategory,
-	deleteUserTrail
+	deleteUserTrail,
+	UpdateTrailData
 };
 
 //========================== Export Module End ===============================
