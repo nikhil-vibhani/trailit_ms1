@@ -86,7 +86,7 @@ trailitDataRoute.get(`${BASE_URL}indexTrailit_trail_data_tour/:user_id/:trail_id
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
-
+    
     const trailitData = {
         trail_id: ctx.params.trail_id,
         user_id: ctx.params.user_id

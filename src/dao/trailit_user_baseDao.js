@@ -134,12 +134,13 @@ class BaseDao {
     // Update user trail
     async UpdateTrailData(data) {
         try {
-            
+                        
             let objData = {
-                title: data.title,
-                description: data.description,
-                media_type: data.mediaType,
-                unique_target_one: data.unique_target_one
+                unique_target_one: data.unique_target_one,
+                responsive: data.responsive,
+                mobile_media_type: data.mobile_media_type,
+                mobile_title: data.mobile_title,
+                mobile_description: data.mobile_description
             };
             
             // Update USER_TOUR table 
