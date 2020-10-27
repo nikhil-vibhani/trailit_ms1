@@ -174,7 +174,7 @@ class BaseDao {
                 console.log(err);
             }
         });
-
+        
         // Get send notification
         socket.on('sendNotification', async (creatorId) => {
             try {
@@ -285,7 +285,7 @@ class BaseDao {
             return err;
         }
     };
-
+    
     // Uploading profile image file into cloud
     async profileImage(data) {
         try {
@@ -449,7 +449,7 @@ class BaseDao {
             //         return a.trail_sortId - b.trail_sortId;
             //     });
             // }
-
+            
             // // Get all trail's id in array
             // const trail_idArray = res.map(el => {
             //     return el.trail_id;
@@ -512,7 +512,7 @@ class BaseDao {
             console.log(err);
         }
     };
-
+    
     // Update trailit file using trail data id and flag
     async updateTrailData(data) {
         try {
