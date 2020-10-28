@@ -14,6 +14,22 @@ function createUserTrail(data) {
 		.catch(err => console.log(err));
 };
 
+function updateTrail(data) {
+	return trailUserDao.updateTrail(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
+function UpdateTrailData(data) {
+	return trailUserDao.UpdateTrailData(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 function getAllUserTrail(data) {
 	return trailUserDao.getAllTrail(data)
 		.then(result => {
@@ -38,14 +54,32 @@ function getUserTourData(data) {
 		.catch(err => console.log(err));
 };
 
+function getAllCategory() {
+	return trailUserDao.getAllCategory()
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
+function deleteUserTrail(data) {
+	return trailUserDao.deleteUserTrail(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+}
 
 //========================== Export Module Start ==============================
-
 module.exports = {
 	createUserTrail,
+	updateTrail,
 	getAllUserTrail,
 	getUserTrailId,
-	getUserTourData
+	getUserTourData,
+	getAllCategory,
+	deleteUserTrail,
+	UpdateTrailData
 };
 
 //========================== Export Module End ===============================

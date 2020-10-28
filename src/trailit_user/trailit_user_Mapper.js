@@ -17,6 +17,16 @@ function registerMapping(params) {
     return respObj;
 }
 
+function trailitExist() {
+    const resObj = {
+        "result": "Trail Title aleady exist.",
+        "statusCode": 400
+    };
+
+    return resObj;
+};
+
 module.exports = {
-    registerMapping
+    registerMapping,
+    trailitExist
 };

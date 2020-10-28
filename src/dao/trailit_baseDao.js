@@ -9,7 +9,7 @@ class BaseDao {
     /*
        ===========================  TRAILIT  ===========================
     */
-
+    
     // Disconnect database
     disconnectDatabase() {
         return db.destroy()
@@ -18,7 +18,7 @@ class BaseDao {
             })
             .catch(err => console.log(err)); 
     };
-
+    
     // Create new Trailit
     async createNewTrailit(data) {
         try {
@@ -35,7 +35,7 @@ class BaseDao {
 
                 return trailitMapper.trailNotCreated();
             }
-
+            
             // // Disconnect database
             // await this.disconnectDatabase();
 

@@ -2,40 +2,22 @@ const Router = require('koa-router');
 const resHndlr = require('../responseHandler');
 const validators = require('./trailit_dataValidation');
 const taskFacade = require('./trailit_dataFacade');
-const { single } = require('../middleware/multer');
-
+const { noneFile, single } = require('../middleware/multer');
 const trailitDataRoute = new Router();
 const BASE_URL  = `/trailit/api/v1/userTourDataDetail/`;
-
+const querystring = require('querystring');
 // Creating new trail data
 trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, next) => {
     // Validate body    
+    
     const errors = await validators.createTrailitDataValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
 
     const data = ctx.request.body;
-    const trailitData = data.map(el => {
-        return {
-            user_id: el.userId,
-            trail_id: el.trail_id,
-            title: el.title,
-            description: el.description,
-            type: el.type,
-            media_type: el.mediaType,
-            web_url: el.web_url,
-            url: el.url,
-            path: el.path,
-            selector: el.selector,
-            unique_target: el.uniqueTarget,
-            class: el.class,
-            created: el.created,
-            trailIndex: el.trailIndex
-        };
-    });
-
-    await taskFacade.createSingleTrailit(trailitData)
+    
+    await taskFacade.createSingleTrailit(data)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
         })
@@ -44,12 +26,18 @@ trailitDataRoute.post(`${BASE_URL}createTrailit_trail_data_tour`, async (ctx, ne
         });
 });
 
+// Creating new trail data
+trailitDataRoute.post(`${BASE_URL}sortTrailOrder`, async (ctx, next) => {
+    const data = await ctx.request.body;
+    console.log("data", data);
+});
+
 // Upload profile image 
 trailitDataRoute.post(`${BASE_URL}uploadTrail_profile_image`, single('profile_image'), async (ctx, next) => {
     const fileData = {
         file: ctx.request.file
     }
-
+    
     await taskFacade.uploadProfileImage(fileData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
@@ -98,7 +86,7 @@ trailitDataRoute.get(`${BASE_URL}indexTrailit_trail_data_tour/:user_id/:trail_id
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors);
     }
-
+    
     const trailitData = {
         trail_id: ctx.params.trail_id,
         user_id: ctx.params.user_id
@@ -144,12 +132,13 @@ trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tour/:user_id`, async (
 });
 
 // Get all trails data of user by user_id
-trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_data_id`, async (ctx, next) => {
+trailitDataRoute.get(`${BASE_URL}readTrailit_trails_data_tours/:user_id/:trail_data_id/:screen`, async (ctx, next) => {
     const trailitData = {
         userId: ctx.params.user_id,
-        trail_data_id:ctx.params.trail_data_id
+        trail_data_id:ctx.params.trail_data_id,
+        screen: ctx.params.screen
     };
-
+    
     await taskFacade.getUserTrailits(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);
@@ -183,12 +172,12 @@ trailitDataRoute.put(`${BASE_URL}updateTrail_trail_data_tour`, async (ctx, next)
 
 // Update trail data by id
 trailitDataRoute.put(`${BASE_URL}updateTrailit_trail_data_tour/:trail_data_id`, async (ctx, next) => {
-    // Validate body    
+    // Validate body
     const errors = await validators.updateTrailitDataValidation(ctx);
     if (errors && errors.errors.length > 0) {
         return resHndlr.sendError(ctx, errors.errors[0]);
     }
-
+    
     const updateData = {
         trail_data_id: ctx.params.trail_data_id,
         updateValue: ctx.request.body.updateValue,
@@ -209,7 +198,7 @@ trailitDataRoute.delete(`${BASE_URL}deleteTrailit_trail_data_tour/:trail_data_id
     const trailitData = {
         trail_data_id: ctx.params.trail_data_id
     };
-
+    
     await taskFacade.deleteTrailit(trailitData)
         .then(result => {
             resHndlr.sendSuccess(ctx, result);

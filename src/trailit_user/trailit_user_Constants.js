@@ -12,7 +12,10 @@ const MESSAGES = {
 	validationError: 'Validation errors',
 	UserIdCantEmpty: 'User id cannot be empty',
 	UserIdRequired: 'User id required',
-	trailNameRequired: 'Trail Name required'
+	trailNameRequired: 'Trail Name required',
+	trailCategoryId: 'Trail Category is required',
+	trailUserStatus: 'Trail Status is required',
+	trailId: 'Trail ID is required'
 };
 
 module.exports = {

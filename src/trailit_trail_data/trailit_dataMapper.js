@@ -89,6 +89,14 @@ function trailitNotifiNotAdded() {
     };
 };
 
+function trailitExist() {
+    const resObj = {
+        "result": "Trailit name exist",
+        "statusCode": 404
+    };
+    return resObj;
+};
+
 module.exports = {
     trailitNotCreated,
     trailitDataExist,
@@ -100,5 +108,6 @@ module.exports = {
     trailitNotAddedToSort,
     trailitFollowNotDeleted,
     trailitNotifiNotAdded,
-    trailitNotRemovedFromSort
+    trailitNotRemovedFromSort,
+    trailitExist
 };

@@ -64,23 +64,23 @@ class BaseDao {
 
             // // Database query
             // const res = await client.query(query);
-
+            
             const res = await db(this.table).insert({ trail_id: data.trail_id, title: data.title, description: data.description, web_url: data.web_url, is_active: data.is_active, created: data.created, element_content: data.element_content }, ['*']);
             
             // // Disconnect database
             // await this.disconnectDatabase();
-
+            
             if (!res || res.length == 0) {
                 return trailitDetailMapper.trailitDetailNotCreated();
             }
 
             // Insert trail_id into sorting table
             const response = await db(this.sortTable).insert({ trail_id: res[0].trail_detail_id }, ['*']);
-
+            
             if (!response || response.length == 0) {
                 return trailitDetailMapper.trailitNotAddedToSort();
             }
-    
+
             // Return results
             return {
                 result: res[0],
@@ -90,11 +90,10 @@ class BaseDao {
         } catch (err) {            
             // // Disconnect database
             // await this.disconnectDatabase();
-
             console.log(err);
         }
-    };    
-
+    };
+    
     // Read single trailit_detail
     async readTrailit_detail(data) {
         try {
@@ -113,24 +112,24 @@ class BaseDao {
                 result: res[0],
                 statusCode: '200'
             };
-            
+
         } catch (err) {
             // // Disconnect database
             // await this.disconnectDatabase();
-
+            
             console.log(err);
         }
     };
-
+    
     // Read trailit_details
     async readTrailit_details() {
         try {
             // Get all trailit details
             // const res = await client.query(`SELECT * FROM ${this.table}`);
-
+            
             // Get all trailit details usign Knex
             const res = await db.select().from(this.table);
-
+            
             // // Disconnect database
             // await this.disconnectDatabase();
 
@@ -143,7 +142,7 @@ class BaseDao {
                 result: res,
                 statusCode: '200'
             };
-
+            
         } catch (err) {
             console.log(err);
             
@@ -151,33 +150,33 @@ class BaseDao {
             // await this.disconnectDatabase();
         }
     };
-    
+
     // Update trailit_detail
     async updateTrailit_detail(data) {
         try {    
             // Check if trailit exist
             const result = await this.checkForExistingTrailitDetail(data);
-    
+
             if (!result || result.length == 0) {
                 // // Disconnect database
                 // await this.disconnectDatabase();
-    
                 return trailitDetailMapper.trailitDetailNotExist();
             }
 
             let trail_id, title, description, web_url, is_active, created, updated, element_content;
+                        
             if (!data.updateValue.trail_id) {
                 trail_id = result[0].trail_id;
             } else {
                 trail_id = data.updateValue.trail_id;
             }
-
+            
             if (!data.updateValue.title) {
                 title = result[0].title;
             } else {
                 title = data.updateValue.title;
             }
-
+            
             if (!data.updateValue.description) {
                 description = result[0].description;
             } else {
@@ -189,88 +188,86 @@ class BaseDao {
             } else {
                 web_url = data.updateValue.web_url;
             }
-
+            
             if (!data.updateValue.element_content) {
                 element_content = result[0].element_content;
             } else {
                 element_content = data.updateValue.element_content;
             }
-
+            
             if (!data.updateValue.is_active) {
                 is_active = result[0].is_active;
             } else {
                 is_active = data.updateValue.is_active;
             }
-
+            
             if (!data.updateValue.created) {
                 created = result[0].created;
             } else {
                 created = data.updateValue.created;
             }
-
+            
             if (!data.updated) {
                 updated = result[0].updated;
             } else {
                 updated = data.updated;
             }
-    
+
             // Update query
             // const query = `UPDATE ${this.table} SET trail_id = '${trail_id}', title = '${title}', description = '${description}', web_url = '${web_url}', is_active = '${is_active}', created = '${created}', updated = '${updated}', element_content = '${element_content}' WHERE trail_detail_id = '${data.trail_detail_id}' RETURNING *`;
-    
+            
             // Update task
             // const res = await client.query(query);
-
+            
             // Update trailit detail using Knex
             const res = await db(this.table).where({ trail_detail_id: data.trail_detail_id }).update({ trail_id: trail_id, title: title, description: description, web_url: web_url, is_active: is_active, created: created, updated: updated, element_content: element_content }, ['*']);
-
             // // Disconnect database
             // await this.disconnectDatabase();
-
+            
             if (!res || res.length == 0) {
                 return trailitDetailMapper.trailitDetailNotUpdated();
             }
-    
+            
             // Return result
             return {
                 result: res[0],
                 statusCode: '200'
             };
-
+            
         } catch (err) {
             // // Disconnect database
             // await this.disconnectDatabase();
-
             console.log(err);
         }
     };
-
+    
     // Delete trailit_detail
     async deleteTrailit_detail(data) {
         try {
             // Check if trailit detail exist
             const res = await this.checkForExistingTrailitDetail(data);
-
+            
             if (!res || res.length == 0) {
                 // // Disconnect database
                 // await this.disconnectDatabase();
-
+                
                 return trailitDetailMapper.trailitDetailNotExist();
             }
-
+            
             // Query for deleting trailit detail
             // const query = `DELETE FROM ${this.table} WHERE trail_detail_id = '${res[0].trail_detail_id}' RETURNING *`;
             // const result = await client.query(query);
-
+            
             // Deleting trailit detail using Knex
             const result = await db(this.table).where({ trail_detail_id: res[0].trail_detail_id }).delete();
-
+            
             // // Disconnect database
             // await this.disconnectDatabase();
 
             if (!result || result == 0) {
                 return trailitDetailMapper.trailitDetailNotDeleted();
             }           
-
+            
             return {
                 result: {
                     message: 'Trail detail deleted!',

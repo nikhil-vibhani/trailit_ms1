@@ -1,5 +1,5 @@
 const BaseDao = require('../dao/trailit_notifi_baseDao');
-const trailit_notifi_Dao = new BaseDao('user_tour_trail_notification');
+const trailit_notifi_Dao = new BaseDao('user_tour_trail_notification', 'user_tour');
 
 function getTrailitFromDb(data) {
     return trailit_notifi_Dao.readTrailit_notification(data)
