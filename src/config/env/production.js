@@ -1,6 +1,6 @@
 module.exports = {
     environment: 'production',
-    port: 7820,
+    port: 7802,
     protocol : 'http',
     TAG: "production",
     pg: {
