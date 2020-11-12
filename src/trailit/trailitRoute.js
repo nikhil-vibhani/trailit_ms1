@@ -8,7 +8,6 @@ const BASE_URL = `/trailit/api/v1/trailitTour/`;
 
 // Create trailit route
 trailitRouter.post(`${BASE_URL}createTrailit`, async (ctx, next) => {
-
     // Validate body
     const errors = validators.createTrailitValidation(ctx);
     if (errors && errors.errors.length > 0) {
