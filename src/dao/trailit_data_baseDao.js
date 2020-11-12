@@ -672,7 +672,8 @@ class BaseDao {
             }
 
             // remove trailit data from sort table
-            const response = await db(this.sortTable).where({ trail_id: res[0].trail_id }).delete();
+            //const response = await db(this.sortTable).where({ trail_id: res[0].trail_id }).delete();
+            const response = await db(this.sortTable).where({ trail_data_id: res[0].trail_data_id }).delete();
 
             if (!response || response == 0) {
                 return trailitDataMapper.trailitNotRemovedFromSort();
