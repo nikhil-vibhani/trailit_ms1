@@ -4,7 +4,7 @@
 
 // for env file
 require('dotenv').config();
-const cors = require('@koa/cors');
+// const cors = require('@koa/cors');
 
 //Import Config
 const config = require('./src/config');
@@ -21,7 +21,7 @@ app.use(cors());
 app.use(bodyParser());
 
 // CORS
-app.use(cors());
+// app.use(cors());
 // app.use(async (ctx, next) => {
 // 	// ctx.res.setHeader()
 // 	//res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
