@@ -4,7 +4,6 @@
 
 // for env file
 require('dotenv').config();
-// const cors = require('@koa/cors');
 
 //Import Config
 const config = require('./src/config');
@@ -21,17 +20,13 @@ app.use(cors());
 app.use(bodyParser());
 
 // CORS
-// app.use(cors());
-// app.use(async (ctx, next) => {
-// 	// ctx.res.setHeader()
-// 	//res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
-// 	ctx.res.setHeader("Access-Control-Allow-Origin", ctx.headers.origin);
-// 	// ctx.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, accessToken,", "lat lng,app_version,platform,ios_version,countryISO,Authorization");
-// 	ctx.res.setHeader("Access-Control-Allow-Headers", "append,delete,entries,foreach,get,has,keys,set,values,Authorization");
-// 	ctx.res.setHeader('Access-Control-Allow-Methods', 'POST,GET,PUT,DELETE,OPTIONS');
-// 	console.log('ctx in header', ctx);
-// 	await next();
-// });
+app.use(async (ctx, next) => {
+	//res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+	ctx.set("Access-Control-Allow-Origin", "*");
+	ctx.set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, accessToken,", "lat lng,app_version,platform,ios_version,countryISO,Authorization");
+	ctx.set('Access-Control-Allow-Methods', 'POST,GET,PUT,DELETE,OPTIONS');
+	await next();
+});
 
 // attach the routes to the app
 require('./src/route/trailit')(app);
