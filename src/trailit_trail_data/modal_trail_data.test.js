@@ -137,7 +137,6 @@ module.exports = function () {
             chai.request(server)
                 .delete('/trailit/api/v1/userTourDetail/deleteTrailit_detail_tour/' + trail_data_id)
                 .end((err, res) => {
-
                     // console.log('line: 116', res.body);
                     expect(res.body.response.statusCode).to.equal('200');
                     expect(res.body.response.result.message).to.equal('Trail detail deleted!');

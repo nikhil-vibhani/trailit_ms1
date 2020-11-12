@@ -10,14 +10,14 @@ const cors = require('@koa/cors');
 const config = require('./src/config');
 const BaseDao = require('./src/dao/trailit_data_baseDao');
 const baseDao = new BaseDao();
-
+var cors = require('koa-cors');
 const Koa = require('koa');
 
 const bodyParser = require('koa-bodyparser');
 
 // init koa app
 const app = new Koa();
-
+app.use(cors());
 app.use(bodyParser());
 
 // CORS

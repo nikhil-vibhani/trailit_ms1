@@ -32,7 +32,7 @@ const responseHandler = require('../responseHandler');
 module.exports = (app) => {
     // // Attach trailit detail Routes
     // app.use(trailit_detail_Tour.routes());
-
+    
     // Attach trailit Routes
     app.use(trailit.routes());
 

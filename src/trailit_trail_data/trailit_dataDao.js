@@ -77,6 +77,16 @@ function getTrailitsFromDb(data) {
         });
 };
 
+function getUserTrailitsFromDb(data) {
+    return trailitFileDao.readTrailitUserData(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+};
+
 function updateTrailIntoDb(data) {
     return trailitFileDao.updateTrailData(data)
         .then(result => {
@@ -117,5 +127,6 @@ module.exports = {
     getTrailitsFromDb,
     updateTrailIntoDb,
     updateTrailitIntoDb,
-    deleteTrailitFromDb
+    deleteTrailitFromDb,
+    getUserTrailitsFromDb
 };

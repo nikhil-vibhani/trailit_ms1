@@ -63,18 +63,18 @@ class BaseDao {
         try {
             // Get all preview user trails
             const response = await this.getPreviewUserTrails(data);
-
+            
             if (response.length === 0) {
                 return trailitFollowMapper.trailitFollowNotExist();
             }
-
+            
             const trailIds = response.map(el => {
                 return el.trail_id.toString();
             });
-
+            
             // Read trailit detail using Knex
             const result = await db.select().from(this.table).whereIn('followed_id', trailIds);
-
+            
             if (!result || result == 0) {
                 return trailitFollowMapper.trailitFollowNotExist();
             }
@@ -111,10 +111,10 @@ class BaseDao {
             const trailIds = response.map(el => {
                 return el.trail_id.toString();
             });
-
+            
             // Read trailit detail using Knex
             const res = await db.select().from(this.table).whereIn('followed_id', trailIds);
-
+            
             if (!res || res == 0) {
                 return trailitFollowMapper.trailitFollowNotExist();
             }
@@ -124,14 +124,14 @@ class BaseDao {
                     return el.followed_id;
                 }
             });
-
+            
             // Deleting trailit detail using Knex
             const result = await db(this.table).whereIn('followed_id', userFollowedTrailIds).delete();
 
             if (!result || result == 0) {
                 return trailitFollowMapper.trailitFollowNotDeleted();
             }
-
+            
             return {
                 result: {
                     message: 'Trail follow deleted!',

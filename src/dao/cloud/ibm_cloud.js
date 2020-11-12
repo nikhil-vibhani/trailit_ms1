@@ -71,7 +71,7 @@ class S3COS {
             })
             .catch(err => console.log(err));
     };
-
+    
     // Post file in bucket
     async createObjectInBucket(file) {
         let fileName = `${new Date().getTime()}_${file.originalname.replace(/\s/g, '_')}`;
@@ -108,7 +108,7 @@ class S3COS {
     async listAllBuckets() {
         try {
             const data = await this.s3.listBuckets().promise();
-
+            
             return data.Buckets;
         } catch (err) {
             console.log(err);

@@ -18,7 +18,7 @@ function createTrailitValidation(req) {
     } else if (!created) {
        errors.push({ code: 500, message: trailitCont.MESSAGES.create_dateCantBeEmpty });
     }
-
+    
     if (errors.length > 0) {
         return validationError(errors);
     }
@@ -28,7 +28,7 @@ function updateTrailitValidation(req) {
     const trail_detail_id = req.params.trail_detail_id;
     const { updated, updateValue } = req.request.body;
     const errors = [];
-
+    
     if (!trail_detail_id) {
         errors.push({ code: 500, message: trailitCont.MESSAGES.trail_detail_idCantBeEmpty });
     } else if (!updated) {
@@ -36,7 +36,7 @@ function updateTrailitValidation(req) {
     } else if (!updateValue) {
         errors.push({ code: 500, message: trailitCont.MESSAGES.updateValueCantBeEmpty });
     }
-
+    
     if (errors.length > 0) {
         return validationError(errors);
     }
