@@ -422,8 +422,12 @@ class BaseDao {
             // Get user's all trails result using Knex 
             const userData = await db.select().from(this.userTable).where({ user_id: data.userId });
 
+            console.log('userData', userData);
+
             // Get sorting value of trails using user_id
             const sortedTrails = await db.select().from(this.sortTable).where({ user_id: data.userId });
+
+            console.log('sortedTrails', sortedTrails);
 
             // Pushing trial ids into new array            
             const userTrailIds = userData.map(el => {
@@ -432,6 +436,8 @@ class BaseDao {
 
             // Get trails details by trail_ids
             let res = await db.select().from(this.table).whereIn('trail_id', userTrailIds);
+
+            console.log('res', res);
 
             if (!res || res.length == 0) {
                 return trailitDataMapper.trailitDataNotExist();
@@ -459,6 +465,9 @@ class BaseDao {
 
             // Get followers of that trails
             const response = await db.select().from(this.followTable).whereIn('followed_id', trail_idArray);
+
+            console.log('response', response);
+
 
             // Get all followers of trail in follower object
             let followerObj = {};
@@ -489,6 +498,8 @@ class BaseDao {
                     }
                 };
             });
+
+            console.log('finalArray', finalArray);
 
             // return results
             return {
