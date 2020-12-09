@@ -200,4 +200,15 @@ trailitUser.post(`${BASE_URL}addUserCategories`, async (ctx, next) => {
 	}
 });
 
+trailitUser.get(`${BASE_URL}checkCategoriesExists/:user_id`, async (ctx, next) => {
+	try {
+		const user_id = ctx.params.user_id;
+		
+		const result = await trailUserFacade.checkCategoriesExists(user_id);
+		resHndlr.sendSuccess(ctx, result);	
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
+});
+
 module.exports = trailitUser;

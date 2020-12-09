@@ -82,6 +82,14 @@ function addUserCategories(data) {
         .catch(err => console.log(err));
 };
 
+function checkCategoriesExists(data) {
+    return trailUserDao.checkCategoriesExists(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => console.log(err));
+};
+
 //========================== Export Module Start ===============================
 
 module.exports = {
@@ -94,5 +102,6 @@ module.exports = {
     deleteUserTrail,
     UpdateTrailData,
     getTrailByCategory,
-    addUserCategories
+    addUserCategories,
+    checkCategoriesExists
 };

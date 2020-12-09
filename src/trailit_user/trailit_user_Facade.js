@@ -87,7 +87,14 @@ function addUserCategories(data) {
 		return result;		
 	})
 	.catch(err => console.log(err));
-}
+};
+function checkCategoriesExists(data) {
+	return trailUserService.checkCategoriesExists(data)
+	.then(result => {
+		return result;		
+	})
+	.catch(err => console.log(err));
+};
 
 //========================== Export Module Start ==============================
 
@@ -101,7 +108,8 @@ module.exports = {
 	deleteUserTrail,
 	UpdateTrailData,
 	getTrailByCategory,
-	addUserCategories
+	addUserCategories,
+	checkCategoriesExists
 };
 
 //========================== Export Module End ===============================

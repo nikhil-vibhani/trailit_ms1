@@ -206,6 +206,20 @@ class BaseDao {
         }
     };
 
+    async checkCategoriesExists(user_id) {
+        try{
+            const result = await db.raw(`SELECT * FROM ${this.userCategoryTable} WHERE user_id='${user_id}'`);
+            console.log('User ID result : ', result);
+            
+            return {
+                result: result.rowCount > 0 ? true : false,
+                statusCode: '200'
+            };
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     // // Get user's all trails
     // async getAllTrails(data) {
     //     try {
