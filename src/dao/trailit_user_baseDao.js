@@ -12,7 +12,8 @@ class BaseDao {
         user_tour_trail_data_table,
         user_tour_trail_follow_table,
         user_tour_trail_notification_table,
-        categoryTable
+        categoryTable,
+        userCategoryTable
     ) {
         this.userTable = user_table;
         this.trailUserActionTable = trail_user_action_table;
@@ -22,6 +23,7 @@ class BaseDao {
         this.userTourTrailFollowTable = user_tour_trail_follow_table;
         this.userTourTrailNotificationTable = user_tour_trail_notification_table;
         this.categoryTable = categoryTable;
+        this.userCategoryTable = userCategoryTable;
     };
 
     // Check for user's trail id
@@ -180,6 +182,25 @@ class BaseDao {
                 result: result.rows,
                 statusCode: '200'
             };
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    async addUserCategories(data) {
+        try {
+            let obj = {
+                user_id: data.user_id,
+                categories_list: data.categories_list
+            }
+            
+            // Insert into USER_Category table 
+            const res = await db(this.userCategoryTable).insert(obj, ['*']);
+
+            return {
+                result: res,
+                statusCode: '200'
+            }; 
         } catch (err) {
             console.log(err);
         }

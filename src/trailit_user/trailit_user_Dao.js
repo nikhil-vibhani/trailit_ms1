@@ -1,5 +1,5 @@
 const BaseDao = require('../dao/trailit_user_baseDao');
-const trailUserDao = new BaseDao('user_tour', 'trail_user_action', 'trail_user_comment_like', 'user_tour_sort', 'user_tour_trail_data', 'user_tour_trail_follow', 'user_tour_trail_notification', 'trail_category');
+const trailUserDao = new BaseDao('user_tour', 'trail_user_action', 'trail_user_comment_like', 'user_tour_sort', 'user_tour_trail_data', 'user_tour_trail_follow', 'user_tour_trail_notification', 'trail_category', 'user_categories');
 //========================== Load Modules End ==============================================
 
 function createNewTrail(data) {
@@ -74,6 +74,13 @@ function getTrailByCategory(categories) {
         .catch(err => console.log(err));
 };
 
+function addUserCategories(data) {
+    return trailUserDao.addUserCategories(data)
+        .then(result => {
+            return result;
+        })
+        .catch(err => console.log(err));
+};
 
 //========================== Export Module Start ===============================
 
@@ -86,5 +93,6 @@ module.exports = {
     getAllCategory,
     deleteUserTrail,
     UpdateTrailData,
-    getTrailByCategory
+    getTrailByCategory,
+    addUserCategories
 };

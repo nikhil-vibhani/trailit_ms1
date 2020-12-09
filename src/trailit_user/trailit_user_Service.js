@@ -78,6 +78,14 @@ function getTrailByCategory(categories) {
 		.catch(err => console.log(err));
 };
 
+function addUserCategories(data) {
+	return trailUserDao.addUserCategories(data)
+		.then(result => {
+			return result;
+		})
+		.catch(err => console.log(err));
+};
+
 //========================== Export Module Start ==============================
 module.exports = {
 	createUserTrail,
@@ -88,7 +96,8 @@ module.exports = {
 	getAllCategory,
 	deleteUserTrail,
 	UpdateTrailData,
-	getTrailByCategory
+	getTrailByCategory,
+	addUserCategories
 };
 
 //========================== Export Module End ===============================

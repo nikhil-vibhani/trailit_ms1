@@ -184,4 +184,20 @@ trailitUser.get(`${BASE_URL}getTrailByCategory/:category_1/:category_2/:category
 	}
 });
 
+trailitUser.post(`${BASE_URL}addUserCategories`, async (ctx, next) => {
+	
+	const data = {
+		user_id: ctx.request.body.user_id,
+		categories_list: ctx.request.body.categories_list,
+	};
+	
+	try {
+		const result = await trailUserFacade.addUserCategories(data);
+
+		resHndlr.sendSuccess(ctx, result);
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
+});
+
 module.exports = trailitUser;
