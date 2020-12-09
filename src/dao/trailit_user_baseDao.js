@@ -72,8 +72,11 @@ class BaseDao {
     async getAllCategory() {
         try {
             const result = await db.select().from(this.categoryTable);
-            
-            return result;
+            return {
+                result: result,
+                statusCode: '200'
+            };
+
         } catch (err) {
             console.log(err);
         }
