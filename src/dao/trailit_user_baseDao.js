@@ -209,12 +209,14 @@ class BaseDao {
     async checkCategoriesExists(user_id) {
         try{
             const result = await db.raw(`SELECT * FROM ${this.userCategoryTable} WHERE user_id='${user_id}'`);
-            console.log('User ID result : ', result);
             
-            return {
-                result: result.rowCount > 0 ? true : false,
-                statusCode: '200'
-            };
+            let response = {};
+            response.exists = result.rowCount > 0 ? true : false;
+            response.statusCode = '200';
+            if(response.exists){
+                response.categories_list = result.rows[0].categories_list;
+            }
+            return response;
         } catch (err) {
             console.log(err);
         }
