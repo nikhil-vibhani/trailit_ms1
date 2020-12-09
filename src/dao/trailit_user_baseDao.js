@@ -168,6 +168,23 @@ class BaseDao {
             console.log(err);
         }
     }
+
+    // Get trail by category
+    
+    async getTrailByCategory(categories) {
+        try {
+            const { category_1, category_2, category_3 } = categories;
+            const result = await db.raw(`SELECT * FROM ${this.userTable} WHERE trail_categor_id IN ('${category_1}', '${category_2}', '${category_3}') and trail_user_status = 'public' ORDER BY trail_categor_id asc`);
+
+            return {
+                result: result.rows,
+                statusCode: '200'
+            };
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     // // Get user's all trails
     // async getAllTrails(data) {
     //     try {

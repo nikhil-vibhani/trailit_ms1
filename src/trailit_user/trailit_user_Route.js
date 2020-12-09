@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const connectDb = require('../config/dbConfig');
 const resHndlr = require('../responseHandler');
 const trailUserFacade = require('./trailit_user_Facade');
 const validation =  require('./trailit_user_Validators');
@@ -162,6 +163,25 @@ trailitUser.delete(`${BASE_URL}delete_user_trail/:trail_id`, async (ctx, next) =
         .catch(err => {
             resHndlr.sendError(ctx, err);
         });
+});
+
+//get all trails by category
+trailitUser.get(`${BASE_URL}getTrailByCategory/:category_1/:category_2/:category_3/:category_4?/:category_5?/:category_6?`, async (ctx, next) => {
+	try {
+
+		const categories = {
+			category_1: ctx.params.category_1,
+			category_2: ctx.params.category_2,
+			category_3: ctx.params.category_3
+		};
+
+		console.log('Categories: ', categories);
+		const result = await trailUserFacade.getTrailByCategory(categories);
+	
+		resHndlr.sendSuccess(ctx, result);	
+	} catch (err) {
+		resHndlr.sendError(ctx, err);
+	}
 });
 
 module.exports = trailitUser;
