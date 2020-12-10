@@ -166,7 +166,7 @@ trailitUser.delete(`${BASE_URL}delete_user_trail/:trail_id`, async (ctx, next) =
 });
 
 //get all trails by category
-trailitUser.get(`${BASE_URL}getTrailByCategory`, async (ctx, next) => {
+trailitUser.post(`${BASE_URL}getTrailByCategory`, async (ctx, next) => {
 	try {
 		const trail_categor_id = ctx.request.body.trail_categor_id
 
