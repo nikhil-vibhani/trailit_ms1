@@ -176,10 +176,11 @@ class BaseDao {
 
     // Get trail by category
     
-    async getTrailByCategory(categories) {
+    async getTrailByCategory(trail_categor_id) {
         try {
-            const { category_1, category_2, category_3 } = categories;
-            const result = await db.raw(`SELECT * FROM ${this.userTable} WHERE trail_categor_id IN ('${category_1}', '${category_2}', '${category_3}') and trail_user_status = 'public' ORDER BY trail_categor_id asc`);
+            //const { category_1, category_2, category_3 } = categories;
+            console.log('Trail category ID: ', trail_categor_id);
+            const result = await db.raw(`SELECT * FROM ${this.userTable} WHERE trail_categor_id IN (${trail_categor_id}) and trail_user_status = 'public' ORDER BY trail_categor_id asc`);
 
             return {
                 result: result.rows,

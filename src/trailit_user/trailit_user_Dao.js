@@ -66,8 +66,8 @@ function deleteUserTrail(data) {
         .catch(err => console.log(err));
 };
 
-function getTrailByCategory(categories) {
-    return trailUserDao.getTrailByCategory(categories)
+function getTrailByCategory(trail_categor_id) {
+    return trailUserDao.getTrailByCategory(trail_categor_id)
         .then(result => {
             return result;
         })

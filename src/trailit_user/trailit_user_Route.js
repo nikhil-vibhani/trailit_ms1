@@ -166,17 +166,12 @@ trailitUser.delete(`${BASE_URL}delete_user_trail/:trail_id`, async (ctx, next) =
 });
 
 //get all trails by category
-trailitUser.get(`${BASE_URL}getTrailByCategory/:category_1/:category_2/:category_3/:category_4?/:category_5?/:category_6?`, async (ctx, next) => {
+trailitUser.get(`${BASE_URL}getTrailByCategory`, async (ctx, next) => {
 	try {
+		const trail_categor_id = ctx.request.body.trail_categor_id
 
-		const categories = {
-			category_1: ctx.params.category_1,
-			category_2: ctx.params.category_2,
-			category_3: ctx.params.category_3
-		};
-
-		console.log('Categories: ', categories);
-		const result = await trailUserFacade.getTrailByCategory(categories);
+		console.log('Categories: ', trail_categor_id);
+		const result = await trailUserFacade.getTrailByCategory(trail_categor_id);
 	
 		resHndlr.sendSuccess(ctx, result);	
 	} catch (err) {

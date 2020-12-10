@@ -74,8 +74,8 @@ function deleteUserTrail(data) {
 		})
 		.catch(err => console.log(err));
 };
-function getTrailByCategory(categories) {
-	return trailUserService.getTrailByCategory(categories)
+function getTrailByCategory(trail_categor_id) {
+	return trailUserService.getTrailByCategory(trail_categor_id)
 		.then(result => {
 			return result;
 		})
