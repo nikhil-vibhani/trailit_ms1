@@ -214,10 +214,11 @@ class BaseDao {
             const result = await db.raw(`SELECT * FROM ${this.userCategoryTable} WHERE user_id='${user_id}'`);
             
             let response = {};
-            response.exists = result.rowCount > 0 ? true : false;
+            response.result = {};
+            response.result.exists = result.rowCount > 0 ? true : false;
             response.statusCode = '200';
-            if(response.exists){
-                response.categories_list = result.rows[0].categories_list;
+            if(response.result.exists){
+                response.result.categories_list = result.rows[0].categories_list;
             }
             return response;
         } catch (err) {
